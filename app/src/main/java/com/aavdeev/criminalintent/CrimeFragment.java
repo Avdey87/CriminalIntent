@@ -61,8 +61,9 @@ mCrime.setTitle( c.toString() );
         //Получаем ссылку на кнопку и задаём в текст кнопки дату
         mDateButton = (Button) v.findViewById( R.id.crime_date );
         //устанавливаем текст в кнопку
-        //установить текст вызвав getDate() у обьета Crime,mCrime, и выводим в строку
-        mDateButton.setText( DateFormat.format( "Jul dd, yyyy",mCrime.getDate() ) );
+        //установить текст вызываем DateFormat.format для форматирования даты
+        // вызвав getDate() у обьета Crime,mCrime, получаем текущую дату
+        mDateButton.setText( DateFormat.format( "EEEE, MMM dd, yyyy",mCrime.getDate() ) );
         // кнопка не активна setEnabled(false)
         mDateButton.setEnabled( false );
 
