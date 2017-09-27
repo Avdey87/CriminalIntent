@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class CrimeListFragment extends Fragment {
     }
 
     //Создаме внутрений класс CrimeHolder
-    private class CrimeHolder extends RecyclerView.ViewHolder {
+    private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mTitleTextView;
         private TextView mDateTextView;
         private CheckBox mSolvedCheckBox;
@@ -70,6 +71,8 @@ public class CrimeListFragment extends Fragment {
         //типа TextView для отображения в Activity
         public CrimeHolder(View itemView) {
             super(itemView);
+            //устанавливаем слушатель на itemView
+            itemView.setOnClickListener(this);
             //Присваеваем mTitleTextView объект типа TextView
             // и прикрепляем шаблон отображения из xml файла (list_item_crime)
             mTitleTextView = (TextView)itemView.findViewById
@@ -97,6 +100,12 @@ public class CrimeListFragment extends Fragment {
         }
 
 
+        @Override
+        public void onClick(View v) {
+            //Toast оброботчик события нажатая кнопка
+            //созадем текст при нажатой кнопки,makeText принмает несколько параметров получаем ID (getActivity)активити, вызываем экземпляр  объекта Crime mCrime у которого вызываем метод getTitle который возвращает стороку в нее пишем "clicked!", передаем в makeText параметр LENGTH_SHORT(легкое нажатие) далее вызываем метод show() отобразить на экране
+            Toast.makeText(getActivity(),mCrime.getTitle()+ " clicked! ",Toast.LENGTH_SHORT).show();
+        }
     }
 
     //Создаем адаптер(переходник) для возможности создавать
