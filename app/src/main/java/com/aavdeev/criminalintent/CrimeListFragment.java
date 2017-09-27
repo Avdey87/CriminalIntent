@@ -122,7 +122,6 @@ public class CrimeListFragment extends Fragment {
                     .inflate( R.layout.list_item_crime, parent, false );
             return new CrimeHolder( view );
         }
-
         //Связывает представление View объекта ViewHolder с объектом модели
         //При вызове он получает ViewHolder и позицию в наборе данных
         // (В какую позицию поставить элемент списка)
