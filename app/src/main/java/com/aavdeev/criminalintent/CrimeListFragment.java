@@ -17,6 +17,7 @@ import java.util.List;
 public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecycleView;
     private CrimeAdapter mAdapter;
+    private Crime mCrime;
 
     //Создаем фрагмент RecyclerView
     @Nullable
@@ -69,12 +70,30 @@ public class CrimeListFragment extends Fragment {
         //типа TextView для отображения в Activity
         public CrimeHolder(View itemView) {
             super(itemView);
+            //Присваеваем mTitleTextView объект типа TextView
+            // и прикрепляем шаблон отображения из xml файла (list_item_crime)
             mTitleTextView = (TextView)itemView.findViewById
                     ( R.id.list_item_crime_title_text_view );
+            // -//-
             mDateTextView = (TextView) itemView.findViewById
                     ( R.id.list_item_crime_date_text_view );
+            // -//-
             mSolvedCheckBox = (CheckBox) itemView.findViewById
                     ( R.id.list_item_crime_solved_check_box );
+        }
+
+        public void bindCrime(Crime crime) {
+            //присваем mCrime(объект типа Crime)
+            //значение crime (переданное методу bindCrime)
+            mCrime = crime;
+            //устанавливаем текст для mTitleTextView полученный от  mCrime.getTitle()
+            mTitleTextView.setText( mCrime.getTitle() );
+            // устанавливаем текст(дату) и выводим это в строку полученные
+            // от mCrime.getDate().toString()
+            mDateTextView.setText( mCrime.getDate().toString() );
+            //устанавливаем состояние флага mSolvedCheckBox
+            //полученого из mCrime.isSolved()
+            mSolvedCheckBox.setChecked( mCrime.isSolved() );
         }
 
 
@@ -113,10 +132,11 @@ public class CrimeListFragment extends Fragment {
         //элемента Crime в массиве
         //позиция определяется индексом объекта Crime в массиве
             Crime crime = mCrimes.get( position );
-         //в holder устанавливаем текст типа TextView полученый из mTitleTextView
-         // и устанавливаем его в объект который находиться в списке на позиции
-         // полученой из Crime crime = mCrimes.get( position );
-            holder.mTitleTextView.setText( crime.getTitle() );
+        //объект типа CrimeHolder (holder)
+        //вызывает метод bindCrime
+        //bindCrime устанавливает Title, дату,
+        // состояние флажка
+        holder.bindCrime( crime );
         }
 
         //возвращает размер списка mCrimes
