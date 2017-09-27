@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
@@ -59,14 +60,21 @@ public class CrimeListFragment extends Fragment {
 
     //Создаме внутрений класс CrimeHolder
     private class CrimeHolder extends RecyclerView.ViewHolder {
-        public TextView mTitleTextView;
+        private TextView mTitleTextView;
+        private TextView mDateTextView;
+        private CheckBox mSolvedCheckBox;
 
         //Создаем объект типа View
         //записываем данные в переменную mTitleTextView
         //типа TextView для отображения в Activity
         public CrimeHolder(View itemView) {
             super(itemView);
-            mTitleTextView = (TextView) itemView;
+            mTitleTextView = (TextView)itemView.findViewById
+                    ( R.id.list_item_crime_title_text_view );
+            mDateTextView = (TextView) itemView.findViewById
+                    ( R.id.list_item_crime_date_text_view );
+            mSolvedCheckBox = (CheckBox) itemView.findViewById
+                    ( R.id.list_item_crime_solved_check_box );
         }
 
 
@@ -90,11 +98,9 @@ public class CrimeListFragment extends Fragment {
         //из Активити getActivity
             LayoutInflater layoutInflater = LayoutInflater.from( getActivity() );
         //Создаем объект View упаковываем его в ViewHolder
-        //Заполняем макет представления из стандартной бибилиотеке android
-        //c именем simple_list_item_1. Этот макет содержит один виджет
-        //TextView для отображения в списке
+        //макет для отображения View определен в list_item_crime
             View view = layoutInflater
-                    .inflate( android.R.layout.simple_list_item_1, parent, false );
+                    .inflate( R.layout.list_item_crime, parent, false );
             return new CrimeHolder( view );
         }
 
