@@ -20,6 +20,10 @@ public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecycleView;
     private CrimeAdapter mAdapter;
     private Crime mCrime;
+    //создаем переменную типа int и присваемваем ей отрицательное значение
+    //отрицательное значение будет означать что изменений не было внесено
+    //так как в методе onClick значения больше нуля означают что были сделаны изменения
+    private int lastUpdatePosition = -1;
 
     //Создаем фрагмент RecyclerView
     @Nullable
@@ -28,11 +32,11 @@ public class CrimeListFragment extends Fragment {
         //Создаем view (отображение на экране)
         //передаем ей разметку fragment_crime_list, помещаем все эт ов контейнер
         // устнанавливаем значение отображение по умолчанию false
-        View view = inflater.inflate( R.layout.fragment_crime_list, container,
-                false );
+        View view = inflater.inflate(R.layout.fragment_crime_list, container,
+                false);
         // в mCrimeRecycleView записываем значение типо RecyclerView
         //в котором создаем view с разметкой определенной в crime_recycler_view
-        mCrimeRecycleView = (RecyclerView) view.findViewById( R.id.crime_recycler_view );
+        mCrimeRecycleView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
         //устанавливаем значения mCrimeRecycleView в LayoutManager
         // создаем новый LinearLayoutManager который получает даный
         //из активити getActivity
@@ -40,7 +44,7 @@ public class CrimeListFragment extends Fragment {
         //RecycleView не отображает элементы на экране эту задачу он передаёт
         //LayoutManager. LayoutManager управляет позиционированием и определяет поведение
         //прокрутки
-        mCrimeRecycleView.setLayoutManager( new LinearLayoutManager( getActivity() ) );
+        mCrimeRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
         //Возвращаем view
         return view;
@@ -55,7 +59,7 @@ public class CrimeListFragment extends Fragment {
     private void updateUI() {
         //Создаем объект типа CrimeLab
         //записываем в него новую активити
-        CrimeLab crimeLab = CrimeLab.get( getActivity() );
+        CrimeLab crimeLab = CrimeLab.get(getActivity());
         //Создаем список и в который записываем данные
         //из getCrimes (создается список из 100 элементов)
         List<Crime> crimes = crimeLab.getCrimes();
@@ -63,13 +67,26 @@ public class CrimeListFragment extends Fragment {
         if (mAdapter == null) {
             //создаме переменную в которую записываем
             //список объектов Crime
-            mAdapter = new CrimeAdapter( crimes );
+            mAdapter = new CrimeAdapter(crimes);
             //у станвливаем в mCrimeRecycleView занчения mAdapter
             //в прокручиваемый список помещаем списко Crimes
-            mCrimeRecycleView.setAdapter( mAdapter );
+            mCrimeRecycleView.setAdapter(mAdapter);
         } else {
+            //если lastUpdatePosition больше -1 значит вносились изменения
+            if (lastUpdatePosition > -1) {
+                //обновляем состояние объекта списка Crimes вызываем
+                //для объекта списка Crime, не всего списка Crimes
+                mAdapter.notifyItemChanged(lastUpdatePosition);
+                //после обноления возвращаем состояние объекта списка в состояние не менялся, устанавливаем отрицательное значение
+                lastUpdatePosition = -1;
+            } else {
+
+                mAdapter.notifyDataSetChanged();
+            }
+
+
             //проверяет изменялись ли данные в mAdapter
-            mAdapter.notifyDataSetChanged();
+            //mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -83,19 +100,19 @@ public class CrimeListFragment extends Fragment {
 
 
         public CrimeHolder(View itemView) {
-            super( itemView );
+            super(itemView);
             //устанавливаем слушатель на itemView
-            itemView.setOnClickListener( this );
+            itemView.setOnClickListener(this);
             //Присваеваем mTitleTextView объект типа TextView
             // и прикрепляем шаблон отображения из xml файла (list_item_crime)
             mTitleTextView = (TextView) itemView.findViewById
-                    ( R.id.list_item_crime_title_text_view );
+                    (R.id.list_item_crime_title_text_view);
             // -//-
             mDateTextView = (TextView) itemView.findViewById
-                    ( R.id.list_item_crime_date_text_view );
+                    (R.id.list_item_crime_date_text_view);
             // -//-
             mSolvedCheckBox = (CheckBox) itemView.findViewById
-                    ( R.id.list_item_crime_solved_check_box );
+                    (R.id.list_item_crime_solved_check_box);
         }
 
         public void bindCrime(Crime crime) {
@@ -103,13 +120,13 @@ public class CrimeListFragment extends Fragment {
             //значение crime (переданное методу bindCrime)
             mCrime = crime;
             //устанавливаем текст для mTitleTextView полученный от  mCrime.getTitle()
-            mTitleTextView.setText( mCrime.getTitle() );
+            mTitleTextView.setText(mCrime.getTitle());
             // устанавливаем текст(дату) и выводим это в строку полученные
             // от mCrime.getDate().toString()
-            mDateTextView.setText( mCrime.getDate().toString() );
+            mDateTextView.setText(mCrime.getDate().toString());
             //устанавливаем состояние флага mSolvedCheckBox
             //полученого из mCrime.isSolved()
-            mSolvedCheckBox.setChecked( mCrime.isSolved() );
+            mSolvedCheckBox.setChecked(mCrime.isSolved());
         }
 
 
@@ -117,8 +134,11 @@ public class CrimeListFragment extends Fragment {
         public void onClick(View v) {
 //создаем новый Intent которуму присваем класс CrimePagerActivity
             //и передаем в качестве параметра индетификатор mCrime (элемент списка)
-            Intent intent = CrimePagerActivity.newIntent( getActivity(), mCrime.getId() );
-            startActivity( intent );
+            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
+            //перепменной lastUpdatePosition присваем текущее состояние
+            //объекта списка
+            lastUpdatePosition = this.getAdapterPosition();
+            startActivity(intent);
         }
     }
 
@@ -139,12 +159,12 @@ public class CrimeListFragment extends Fragment {
         public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             //Создаем LayoutInflater и заполняем его данными которые получаем
             //из Активити getActivity
-            LayoutInflater layoutInflater = LayoutInflater.from( getActivity() );
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             //Создаем объект View упаковываем его в ViewHolder
             //макет для отображения View определен в list_item_crime
             View view = layoutInflater
-                    .inflate( R.layout.list_item_crime, parent, false );
-            return new CrimeHolder( view );
+                    .inflate(R.layout.list_item_crime, parent, false);
+            return new CrimeHolder(view);
         }
 
         //Связывает представление View объекта ViewHolder с объектом модели
@@ -155,12 +175,12 @@ public class CrimeListFragment extends Fragment {
             //Создаем переменную типа Crime в которую записываем позицию
             //элемента Crime в массиве
             //позиция определяется индексом объекта Crime в массиве
-            Crime crime = mCrimes.get( position );
+            Crime crime = mCrimes.get(position);
             //объект типа CrimeHolder (holder)
             //вызывает метод bindCrime
             //bindCrime устанавливает Title, дату,
             // состояние флажка
-            holder.bindCrime( crime );
+            holder.bindCrime(crime);
         }
 
         //возвращает размер списка mCrimes
