@@ -46,6 +46,12 @@ public class CrimeListFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
     private void updateUI() {
         //Создаем объект типа CrimeLab
         //записываем в него новую активити
@@ -53,12 +59,18 @@ public class CrimeListFragment extends Fragment {
         //Создаем список и в который записываем данные
         //из getCrimes (создается список из 100 элементов)
         List<Crime> crimes = crimeLab.getCrimes();
-        //создаем переменную mAdapter для записи в нее
-        //списка crimes
-        mAdapter = new CrimeAdapter( crimes );
-        //устанавливаем в mCrimeRecycleView список crimes
-        //полученный из crimes
-        mCrimeRecycleView.setAdapter( mAdapter );
+//если объект mAdapter не создан
+        if (mAdapter == null) {
+            //создаме переменную в которую записываем
+            //список объектов Crime
+            mAdapter = new CrimeAdapter( crimes );
+            //у станвливаем в mCrimeRecycleView занчения mAdapter
+            //в прокручиваемый список помещаем списко Crimes
+            mCrimeRecycleView.setAdapter( mAdapter );
+        } else {
+            //проверяет изменялись ли данные в mAdapter
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     //Создаме внутрений класс CrimeHolder

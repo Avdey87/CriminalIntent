@@ -45,10 +45,9 @@ public class CrimeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
-        //создаем переменную UUID в которую записываем
-        //текущий индетификатор активите CrimeActivity.EXTRA_CRIME_ID
-        UUID crimeId = (UUID) getActivity().getIntent()
-                .getSerializableExtra( CrimeActivity.EXTRA_CRIME_ID );
+        //в переменную записываем индетификатор полученный
+        // из константы ARG_CRIME_ID
+        UUID crimeId = (UUID) getArguments().getSerializable( ARG_CRIME_ID );
         //mCrime записываем id элемента списка (помещаем в переменную объект списка)
         mCrime = CrimeLab.get( getActivity() ).getCrime( crimeId );
     }
