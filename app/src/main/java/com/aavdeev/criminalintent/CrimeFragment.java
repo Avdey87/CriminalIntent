@@ -45,11 +45,12 @@ public class CrimeFragment extends Fragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
+
             //onTextChanged
             //Метод возвращает строку которая используется для задания заголовка Crime
             @Override
             public void onTextChanged(CharSequence c, int start, int before, int count) {
-mCrime.setTitle( c.toString() );
+                mCrime.setTitle( c.toString() );
             }
 
             @Override
@@ -63,13 +64,13 @@ mCrime.setTitle( c.toString() );
         //устанавливаем текст в кнопку
         //установить текст вызываем DateFormat.format для форматирования даты
         // вызвав getDate() у обьета Crime,mCrime, получаем текущую дату
-        mDateButton.setText( DateFormat.format( "EEEE, MMM dd, yyyy",mCrime.getDate() ) );
+        mDateButton.setText( DateFormat.format( "EEEE, MMM dd, yyyy", mCrime.getDate() ) );
         // кнопка не активна setEnabled(false)
         mDateButton.setEnabled( false );
 
         //Получаем ссылку на галочку
         mSolvedCheckBox = (CheckBox) v.findViewById( R.id.crime_solved );
-       //Устаналиваем слушаетль на CheckBox
+        //Устаналиваем слушаетль на CheckBox
         mSolvedCheckBox.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

@@ -10,8 +10,8 @@ public abstract class SingleFragmentActivity extends FragmentActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fragment );
+        super.onCreate( savedInstanceState );
+        setContentView( R.layout.activity_fragment );
 
         //добавления фрагмента в активность
         FragmentManager fm = getSupportFragmentManager();
