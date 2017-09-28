@@ -115,9 +115,9 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-//создаем новый Intent которуму присваем класс CrimeActivity
+//создаем новый Intent которуму присваем класс CrimePagerActivity
             //и передаем в качестве параметра индетификатор mCrime (элемент списка)
-            Intent intent = CrimeActivity.newIntent( getActivity(), mCrime.getId() );
+            Intent intent = CrimePagerActivity.newIntent( getActivity(), mCrime.getId() );
             startActivity( intent );
         }
     }
