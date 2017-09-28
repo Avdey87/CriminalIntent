@@ -81,9 +81,7 @@ public class CrimeListFragment extends Fragment {
         private CheckBox mSolvedCheckBox;
         private Crime mCrime;
 
-        //Создаем объект типа View
-        //записываем данные в переменную mTitleTextView
-        //типа TextView для отображения в Activity
+
         public CrimeHolder(View itemView) {
             super( itemView );
             //устанавливаем слушатель на itemView
