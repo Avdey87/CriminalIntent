@@ -1,6 +1,7 @@
 package com.aavdeev.criminalintent;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -104,11 +105,10 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            //Toast оброботчик события нажатая кнопка
-            //созадем текст при нажатой кнопки,makeText принмает несколько параметров получаем ID (getActivity)активити, вызываем экземпляр  объекта Crime mCrime у которого вызываем метод getTitle который возвращает стороку в нее пишем "clicked!", передаем в makeText параметр LENGTH_SHORT(легкое нажатие) далее вызываем метод show() отобразить на экране
-            Toast.makeText( getActivity(),
-                    mCrime.getTitle() + " clicked! ",
-                    Toast.LENGTH_SHORT ).show();
+//создаем новый Intent которуму присваем класс CrimeActivity
+            //и передаем в качестве параметра индетификатор mCrime (элемент списка)
+            Intent intent = CrimeActivity.newIntent( getActivity(), mCrime.getId() );
+            startActivity( intent );
         }
     }
 

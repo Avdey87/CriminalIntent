@@ -15,16 +15,42 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.util.UUID;
+
 public class CrimeFragment extends Fragment {
+    private static final String ARG_CRIME_ID = "crime_id";
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
 
+    //Прив вызове CrimeFragment вызывается CrimeFragment.newInstance
+    //в который передается занчение тапа UUID (индетификатор)
+    public static CrimeFragment newInstance(UUID crimeId) {
+        //для создания аргумента мы создаем объект Bundle
+        //этот объект содержит ключ и значения
+        Bundle args = new Bundle();
+        //args кладем значения crimeId типа ARG_CRIME_ID
+        args.putSerializable( ARG_CRIME_ID, crimeId );
+
+        //Создаем экземпляр класса CrimeFragment
+        CrimeFragment fragment = new CrimeFragment();
+        //устанавливаем в экземпляр класса в качестве параметра аргумент
+        fragment.setArguments( args );
+        //возвращаем экземпляр класса CrimeFragment
+        return fragment;
+    }
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
-        mCrime = new Crime();
+        //создаем переменную UUID в которую записываем
+        //текущий индетификатор активите CrimeActivity.EXTRA_CRIME_ID
+        UUID crimeId = (UUID) getActivity().getIntent()
+                .getSerializableExtra( CrimeActivity.EXTRA_CRIME_ID );
+        //mCrime записываем id элемента списка (помещаем в переменную объект списка)
+        mCrime = CrimeLab.get( getActivity() ).getCrime( crimeId );
     }
 
     @Nullable
@@ -38,6 +64,8 @@ public class CrimeFragment extends Fragment {
 
         //Настройка реакции виджета EditText на ввод пользователя
         mTitleField = (EditText) v.findViewById( R.id.crime_title );
+        //выводим краткое описание
+        mTitleField.setText( mCrime.getTitle() );
         //Получение ссылки на EditText и установка слушателя
         //Создаем анонимный внутрений класс котороый реализует слушателя TextWatcher
         mTitleField.addTextChangedListener( new TextWatcher() {
@@ -70,6 +98,8 @@ public class CrimeFragment extends Fragment {
 
         //Получаем ссылку на галочку
         mSolvedCheckBox = (CheckBox) v.findViewById( R.id.crime_solved );
+        //выводим состояние чек бокса
+        mSolvedCheckBox.setChecked( mCrime.isSolved() );
         //Устаналиваем слушаетль на CheckBox
         mSolvedCheckBox.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
             @Override
