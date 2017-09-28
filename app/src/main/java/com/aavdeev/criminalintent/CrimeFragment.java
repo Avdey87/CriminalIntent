@@ -4,6 +4,7 @@ package com.aavdeev.criminalintent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
     private static final String ARG_CRIME_ID = "crime_id";
+    private static final String DIALOG_DATE = "DialogDate";
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
@@ -92,8 +94,22 @@ public class CrimeFragment extends Fragment {
         //установить текст вызываем DateFormat.format для форматирования даты
         // вызвав getDate() у обьета Crime,mCrime, получаем текущую дату
         mDateButton.setText( DateFormat.format( "EEEE, MMM dd, yyyy", mCrime.getDate() ) );
-        // кнопка не активна setEnabled(false)
-        mDateButton.setEnabled( false );
+        //Устанвливаем слушатель на кнопку
+       mDateButton.setOnClickListener(new View.OnClickListener() {
+           //обработчик нажатия кнопки
+           @Override
+           public void onClick(View v) {
+               //Создаем экземпляр FragmentManager и присваеваем ему значение
+               //из FragmentManager  ????
+               FragmentManager fragmentManager = getFragmentManager();
+               //создаем экземпляр DatePickerFragment рписваевеваем занчения хранящиеся в newInstance класса DatePickerFragment и передаем в качестве параметров дату
+               DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
+               //заполняем вновь созданный диалог и выводим его на экран
+               //ключ выводимого дилог хрнаиться в переменной fragmentManager
+               // а текстовое значение в DIALOG_DATE
+               dialog.show(fragmentManager, DIALOG_DATE);
+           }
+       });
 
         //Получаем ссылку на галочку
         mSolvedCheckBox = (CheckBox) v.findViewById( R.id.crime_solved );
