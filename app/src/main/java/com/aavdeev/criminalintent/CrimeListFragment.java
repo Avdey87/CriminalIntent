@@ -61,10 +61,12 @@ public class CrimeListFragment extends Fragment {
     }
 
     //Создаме внутрений класс CrimeHolder
+    //он отвечает за отдельный элемент в списке
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mTitleTextView;
         private TextView mDateTextView;
         private CheckBox mSolvedCheckBox;
+        private Crime mCrime;
 
         //Создаем объект типа View
         //записываем данные в переменную mTitleTextView
