@@ -70,12 +70,12 @@ public class CrimeListFragment extends Fragment {
         //записываем данные в переменную mTitleTextView
         //типа TextView для отображения в Activity
         public CrimeHolder(View itemView) {
-            super(itemView);
+            super( itemView );
             //устанавливаем слушатель на itemView
-            itemView.setOnClickListener(this);
+            itemView.setOnClickListener( this );
             //Присваеваем mTitleTextView объект типа TextView
             // и прикрепляем шаблон отображения из xml файла (list_item_crime)
-            mTitleTextView = (TextView)itemView.findViewById
+            mTitleTextView = (TextView) itemView.findViewById
                     ( R.id.list_item_crime_title_text_view );
             // -//-
             mDateTextView = (TextView) itemView.findViewById
@@ -104,7 +104,7 @@ public class CrimeListFragment extends Fragment {
         public void onClick(View v) {
             //Toast оброботчик события нажатая кнопка
             //созадем текст при нажатой кнопки,makeText принмает несколько параметров получаем ID (getActivity)активити, вызываем экземпляр  объекта Crime mCrime у которого вызываем метод getTitle который возвращает стороку в нее пишем "clicked!", передаем в makeText параметр LENGTH_SHORT(легкое нажатие) далее вызываем метод show() отобразить на экране
-            Toast.makeText(getActivity(),mCrime.getTitle()+ " clicked! ",Toast.LENGTH_SHORT).show();
+            Toast.makeText( getActivity(), mCrime.getTitle() + " clicked! ", Toast.LENGTH_SHORT ).show();
         }
     }
 
@@ -118,33 +118,35 @@ public class CrimeListFragment extends Fragment {
         public CrimeAdapter(List<Crime> crimes) {
             mCrimes = crimes;
         }
+
         //Вызываестя виджетом RecyclerView когда ему потребуется
         //новое представления для отображения элемента
         @Override
         public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //Создаем LayoutInflater и заполняем его данными которые получаем
-        //из Активити getActivity
+            //Создаем LayoutInflater и заполняем его данными которые получаем
+            //из Активити getActivity
             LayoutInflater layoutInflater = LayoutInflater.from( getActivity() );
-        //Создаем объект View упаковываем его в ViewHolder
-        //макет для отображения View определен в list_item_crime
+            //Создаем объект View упаковываем его в ViewHolder
+            //макет для отображения View определен в list_item_crime
             View view = layoutInflater
                     .inflate( R.layout.list_item_crime, parent, false );
             return new CrimeHolder( view );
         }
+
         //Связывает представление View объекта ViewHolder с объектом модели
         //При вызове он получает ViewHolder и позицию в наборе данных
         // (В какую позицию поставить элемент списка)
         @Override
         public void onBindViewHolder(CrimeHolder holder, int position) {
-        //Создаем переменную типа Crime в которую записываем позицию
-        //элемента Crime в массиве
-        //позиция определяется индексом объекта Crime в массиве
+            //Создаем переменную типа Crime в которую записываем позицию
+            //элемента Crime в массиве
+            //позиция определяется индексом объекта Crime в массиве
             Crime crime = mCrimes.get( position );
-        //объект типа CrimeHolder (holder)
-        //вызывает метод bindCrime
-        //bindCrime устанавливает Title, дату,
-        // состояние флажка
-        holder.bindCrime( crime );
+            //объект типа CrimeHolder (holder)
+            //вызывает метод bindCrime
+            //bindCrime устанавливает Title, дату,
+            // состояние флажка
+            holder.bindCrime( crime );
         }
 
         //возвращает размер списка mCrimes
