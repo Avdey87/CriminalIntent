@@ -1,6 +1,8 @@
 package com.aavdeev.criminalintent;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,11 +18,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
+    private static final int REQUEST_DATE = 0;
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
@@ -56,7 +60,8 @@ public class CrimeFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         //Явное заполнение фрагмента, LayoutInflater.inflate с передачей
         //индетификатор ресурса макета.
         //Container определяет родительское представления
@@ -90,26 +95,26 @@ public class CrimeFragment extends Fragment {
 
         //Получаем ссылку на кнопку и задаём в текст кнопки дату
         mDateButton = (Button) v.findViewById( R.id.crime_date );
-        //устанавливаем текст в кнопку
-        //установить текст вызываем DateFormat.format для форматирования даты
-        // вызвав getDate() у обьета Crime,mCrime, получаем текущую дату
-        mDateButton.setText( DateFormat.format( "EEEE, MMM dd, yyyy", mCrime.getDate() ) );
+        updateDate();
         //Устанвливаем слушатель на кнопку
-       mDateButton.setOnClickListener(new View.OnClickListener() {
-           //обработчик нажатия кнопки
-           @Override
-           public void onClick(View v) {
-               //Создаем экземпляр FragmentManager и присваеваем ему значение
-               //из FragmentManager  ????
-               FragmentManager fragmentManager = getFragmentManager();
-               //создаем экземпляр DatePickerFragment рписваевеваем занчения хранящиеся в newInstance класса DatePickerFragment и передаем в качестве параметров дату
-               DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
-               //заполняем вновь созданный диалог и выводим его на экран
-               //ключ выводимого дилог хрнаиться в переменной fragmentManager
-               // а текстовое значение в DIALOG_DATE
-               dialog.show(fragmentManager, DIALOG_DATE);
-           }
-       });
+        mDateButton.setOnClickListener( new View.OnClickListener() {
+            //обработчик нажатия кнопки
+            @Override
+            public void onClick(View v) {
+                //Создаем экземпляр FragmentManager и присваеваем ему значение
+                //из FragmentManager  ????
+                FragmentManager fragmentManager = getFragmentManager();
+                //создаем экземпляр DatePickerFragment рписваевеваем занчения хранящиеся в newInstance класса DatePickerFragment и передаем в качестве параметров дату
+                DatePickerFragment dialog = DatePickerFragment.newInstance( mCrime.getDate() );
+                //устанавливает целевым фрагментом текущий
+                //REQUEST_DATE хранит данные он полученных данных о дате
+                dialog.setTargetFragment( CrimeFragment.this, REQUEST_DATE );
+                //заполняем вновь созданный диалог и выводим его на экран
+                //ключ выводимого дилог хрнаиться в переменной fragmentManager
+                // а текстовое значение в DIALOG_DATE
+                dialog.show( fragmentManager, DIALOG_DATE );
+            }
+        } );
 
         //Получаем ссылку на галочку
         mSolvedCheckBox = (CheckBox) v.findViewById( R.id.crime_solved );
@@ -126,5 +131,41 @@ public class CrimeFragment extends Fragment {
         } );
 
         return v;
+
+    }
+
+    private void updateDate(CharSequence format) {
+        mDateButton.setText( format );
+    }
+
+    //Метод для возвращенгия данных целевому фрагменту
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    //если переданный параметр resultCode не равен Activity.RESULT_OK
+        //
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        //есои ответ requestCode равен REQUEST_DATE
+        if (requestCode == REQUEST_DATE) {
+            //Создаем новую Date переменую
+            Date date = (Date) data
+                    //в которую устанавливаем данные полученные из класса
+                    //DatePickerFragment переменной EXTRA_DATE
+                    .getSerializableExtra( DatePickerFragment.EXTRA_DATE );
+            //в экземпляр объекта Crime mCrime в носим данный
+            //полученные в date
+            mCrime.setDate( date );
+            //обновляем дату
+            updateDate();
+        }
+    }
+
+    //Мето добновления даты в заданном формате
+    private void updateDate() {
+        //устанавливаем текст в кнопку
+        //установить текст вызываем DateFormat.format для форматирования даты
+        // вызвав getDate() у обьета Crime,mCrime, получаем текущую дату
+        mDateButton.setText( DateFormat.format( "EEEE, MMM dd, yyyy", mCrime.getDate() ) );
     }
 }
