@@ -68,7 +68,7 @@ public class TimePickerFragment extends DialogFragment {
         //устанавливаем время, парметром указываем переменную date в хрониться дата
         calendar.setTime( mTime );
         //создаем 2 переменных час, минуты
-        int hour = calendar.get( Calendar.HOUR_OF_DAY );
+        int hour = calendar.get( Calendar.HOUR );
         int minute = calendar.get( Calendar.MINUTE );
 
         //создаем экземпляр типа View. Создаем из layout файла элемент вью
@@ -79,8 +79,6 @@ public class TimePickerFragment extends DialogFragment {
 
         //Создаем экземпляр TimePicker и присваеваем ей настройки из xml файла по id
         TimePicker timePicker = (TimePicker) v.findViewById( R.id.dialog_time_time_picker );
-        //отображать время в формате 24 часа
-        timePicker.setIs24HourView( true );
         //установить час
         timePicker.setCurrentHour( hour );
         //установить минуты
@@ -91,7 +89,8 @@ public class TimePickerFragment extends DialogFragment {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                 //присваеваем mTime текуще время
-                mTime = new GregorianCalendar( 0, 0, 0, hourOfDay, minute ).getTime();
+                mTime.setHours( hourOfDay );
+                mTime.setMinutes( minute );
                 //получаем время из getArguments с установлеными параметрами состояния
                 //EXTRA_TIME-ключ, mTime- значение
                 getArguments().putSerializable( EXTRA_TIME, mTime );

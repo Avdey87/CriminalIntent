@@ -25,9 +25,12 @@ public class CrimeFragment extends Fragment {
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
     private static final int REQUEST_DATE = 0;
+    private static final String DIALOG_TIME = "time";
+    private static final int REQUEST_TIME = -1;
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
+    private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
 
     //Прив вызове CrimeFragment вызывается CrimeFragment.newInstance
@@ -116,6 +119,33 @@ public class CrimeFragment extends Fragment {
             }
         } );
 
+        //Получаем ссылку на кнопку и задаём в текст кнопки время
+        mTimeButton = (Button) v.findViewById( R.id.crime_time );
+        //обновление даты
+        updateDate();
+        mTimeButton.setOnClickListener( new View.OnClickListener() {
+            //реализация нажатой кнопки
+            @Override
+            public void onClick(View v) {
+                //создаем экземпляр FragmentManager
+                //в который устанвливаем активити которая была получена
+                // из getSupportFragmentManager
+                FragmentManager fm = getActivity()
+                        .getSupportFragmentManager();
+
+                //создаем экземпляр TimePickerFragment
+                // присваеваем ему значение TimePickerFragment
+                //полученные из интстенс , в ингстенс паредаем дату ( mCrime.getDate())
+                TimePickerFragment dialog = TimePickerFragment
+                        .newInstance( mCrime.getDate() );
+                //устанавливаем в экземпляр TimePickerFragment
+                // Текущей фрагмент CrimeFragment.this- ключ, и значение REQUEST_TIME
+                dialog.setTargetFragment( CrimeFragment.this, REQUEST_TIME );
+                //показать диалог с 2 переданными параметрами ( fm, DIALOG_TIME )
+                //фрагмент и его значение.
+                dialog.show( fm, DIALOG_TIME );
+            }
+        } );
         //Получаем ссылку на галочку
         mSolvedCheckBox = (CheckBox) v.findViewById( R.id.crime_solved );
         //выводим состояние чек бокса
