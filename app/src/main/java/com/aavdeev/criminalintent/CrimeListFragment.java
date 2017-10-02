@@ -25,18 +25,20 @@ public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecycleView;
     private CrimeAdapter mAdapter;
     private Crime mCrime;
+    private boolean mSubtitleVisible;
+    private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
     //создаем переменную типа int и присваемваем ей отрицательное значение
     //отрицательное значение будет означать что изменений не было внесено
     //так как в методе onClick значения больше нуля означают что были сделаны изменения
     private int lastUpdatePosition = -1;
 
-//переопределяем метод
+    //переопределяем метод
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate( savedInstanceState );
+        super.onCreate(savedInstanceState);
         //сообщаем экземпляру класса CrimeListFragment
         //что он должен полкчать обратный вызов меню
-        setHasOptionsMenu( true );
+        setHasOptionsMenu(true);
     }
 
     //Создаем фрагмент RecyclerView
@@ -59,6 +61,12 @@ public class CrimeListFragment extends Fragment {
         //LayoutManager. LayoutManager управляет позиционированием и определяет поведение
         //прокрутки
         mCrimeRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        //если сохраеный инстенс не равен нулю
+        if (savedInstanceState != null) {
+            //присваеваем mSubtitleVisible значение SAVED_SUBTITLE_VISIBLE
+            mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
+        }
         updateUI();
         //Возвращаем view
         return view;
@@ -70,25 +78,47 @@ public class CrimeListFragment extends Fragment {
         updateUI();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_SUBTITLE_VISIBLE, mSubtitleVisible);
+    }
+
     //переопределяем метод создания меню
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu( menu, inflater );
+        super.onCreateOptionsMenu(menu, inflater);
         //создаем меню в файле fragment_crime_list
-        inflater.inflate( R.menu.fragment_crime_list, menu );
+        inflater.inflate(R.menu.fragment_crime_list, menu);
+
+        //иницилизируем повторное создание кнопок действия при нажатии
+        MenuItem subtitleItem = menu.findItem(R.id.menu_item_show_subtitle);
+        //если кнопка нажата выводить текст размер списка скрыт
+        if (mSubtitleVisible) {
+            subtitleItem.setTitle(R.string.hide_subtitle);
+        } else {
+            //показать текст размер списка
+            subtitleItem.setTitle(R.string.show_subtitle);
+        }
     }
 
     //метод для получение количества экземпляров Crime в списке
     private void updateSubtitle() {
         //Создаем экземпляр CrimeLab и присваеваем ему значение
         CrimeLab crimeLab = CrimeLab.get(getActivity());
-       //создаем переменную типа int записываем в нее размер списка Crime
+        //создаем переменную типа int записываем в нее размер списка Crime
         //полученый из crimeLab.getCrimes().size();
         int crimeCount = crimeLab.getCrimes().size();
         // ооздаем string переменную и устанавливаем в нее
         //строковое значение полученное из crimeCount(размер списка Crime)
         //используем для отображения subtitle_format
         String subtitle = getString(R.string.subtitle_format, crimeCount);
+
+        //если не mSubtitleVisible то есть значение false
+        if (!mSubtitleVisible) {
+            //присваеваем размер списка null
+            subtitle = null;
+        }
 
         //создаем активити AppCompatActivity типа
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -123,6 +153,8 @@ public class CrimeListFragment extends Fragment {
 
                 mAdapter.notifyDataSetChanged();
             }
+            //обновляем значения в меню
+            updateSubtitle();
 
 
             //проверяет изменялись ли данные в mAdapter
@@ -242,18 +274,23 @@ public class CrimeListFragment extends Fragment {
                 //у CrimeLab вызываем метод get(пробегает по всему списку
                 // и возвращает id объекта в списке) псоле чего вызываем
                 //addCrime для добавление экземпляра crime в коенц списка
-                CrimeLab.get( getActivity() ).addCrime( crime );
+                CrimeLab.get(getActivity()).addCrime(crime);
                 //Создаем Intent записываем а него интент с параметрами
                 //getActivity получить активити(найти нужную ативити)
                 //с id полученым из экземпляр класса Crime метода getId
                 Intent intent = CrimePagerActivity
-                        .newIntent( getActivity(), crime.getId() );
+                        .newIntent(getActivity(), crime.getId());
                 //Запустить активите с усатановлеными параметрами intent
-                startActivity( intent );
+                startActivity(intent);
                 //вернуть true , то есть отбразить ативити
                 return true;
             //при нажатии на menu_item_show_subtitle
             case R.id.menu_item_show_subtitle:
+                //если пременная mSubtitleVisible изменилась
+                mSubtitleVisible = !mSubtitleVisible;
+                //тогда отменить действие меню
+                //отмена действия меню invalidateOptionsMenu();
+                getActivity().invalidateOptionsMenu();
                 //вызываем метод updateSubtitle (количество объектов в списке)
                 updateSubtitle();
                 //возвращаем тру для отображания
@@ -261,7 +298,7 @@ public class CrimeListFragment extends Fragment {
             //если не найден id в case-ах выполняем
             default:
                 //вернуть меню родительского класса
-                return super.onOptionsItemSelected( item );
+                return super.onOptionsItemSelected(item);
         }
     }
 }
