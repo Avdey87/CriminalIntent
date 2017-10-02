@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -122,7 +123,7 @@ public class CrimeFragment extends Fragment {
         //Получаем ссылку на кнопку и задаём в текст кнопки время
         mTimeButton = (Button) v.findViewById( R.id.crime_time );
         //обновление даты
-        updateDate();
+        updateTime();
         mTimeButton.setOnClickListener( new View.OnClickListener() {
             //реализация нажатой кнопки
             @Override
@@ -197,5 +198,10 @@ public class CrimeFragment extends Fragment {
         //установить текст вызываем DateFormat.format для форматирования даты
         // вызвав getDate() у обьета Crime,mCrime, получаем текущую дату
         mDateButton.setText( DateFormat.format( "EEEE, MMM dd, yyyy", mCrime.getDate() ) );
+    }
+
+    private void updateTime() {
+        SimpleDateFormat tf = new SimpleDateFormat( "kk:mm:ss zzz" );
+        mTimeButton.setText( tf.format( mCrime.getDate() ) );
     }
 }

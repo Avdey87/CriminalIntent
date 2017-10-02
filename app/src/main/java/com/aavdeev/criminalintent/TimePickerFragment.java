@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.TimePicker;
 
@@ -27,6 +28,8 @@ public class TimePickerFragment extends DialogFragment {
     private static final String ARG_TIME = "time";
     //Создаем  TimePicker объект
     private Date mTime;
+
+    public static final String TAG = "TimePickerFragment";
 
     //Создаем Instance для хрениня данных с аргументам
     public static TimePickerFragment newInstance(Date time) {
@@ -60,6 +63,7 @@ public class TimePickerFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Log.d( TAG, "onCreate" );
         //создаем Date переменную и записываем в нее Date данные которые получаем из аргумента ARG_TIME
         mTime = (Date) getArguments().getSerializable( ARG_TIME );
 
@@ -88,6 +92,9 @@ public class TimePickerFragment extends DialogFragment {
             //отслеживание изменение в TimePicker вью в 2 обектах, часы и минуты
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                Log.d( TAG, "onTimeChanged" );
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime( mTime );
                 //присваеваем mTime текуще время
                 mTime.setHours( hourOfDay );
                 mTime.setMinutes( minute );
