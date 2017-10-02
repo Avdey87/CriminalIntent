@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -74,6 +76,24 @@ public class CrimeListFragment extends Fragment {
         super.onCreateOptionsMenu( menu, inflater );
         //создаем меню в файле fragment_crime_list
         inflater.inflate( R.menu.fragment_crime_list, menu );
+    }
+
+    //метод для получение количества экземпляров Crime в списке
+    private void updateSubtitle() {
+        //Создаем экземпляр CrimeLab и присваеваем ему значение
+        CrimeLab crimeLab = CrimeLab.get(getActivity());
+       //создаем переменную типа int записываем в нее размер списка Crime
+        //полученый из crimeLab.getCrimes().size();
+        int crimeCount = crimeLab.getCrimes().size();
+        // ооздаем string переменную и устанавливаем в нее
+        //строковое значение полученное из crimeCount(размер списка Crime)
+        //используем для отображения subtitle_format
+        String subtitle = getString(R.string.subtitle_format, crimeCount);
+
+        //создаем активити AppCompatActivity типа
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        //устанавливаем в экщенбар созданного активити значение subtitle (размер списка)
+        activity.getSupportActionBar().setSubtitle(subtitle);
     }
 
     private void updateUI() {
@@ -231,6 +251,12 @@ public class CrimeListFragment extends Fragment {
                 //Запустить активите с усатановлеными параметрами intent
                 startActivity( intent );
                 //вернуть true , то есть отбразить ативити
+                return true;
+            //при нажатии на menu_item_show_subtitle
+            case R.id.menu_item_show_subtitle:
+                //вызываем метод updateSubtitle (количество объектов в списке)
+                updateSubtitle();
+                //возвращаем тру для отображания
                 return true;
             //если не найден id в case-ах выполняем
             default:
