@@ -8,6 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -24,6 +27,15 @@ public class CrimeListFragment extends Fragment {
     //отрицательное значение будет означать что изменений не было внесено
     //так как в методе onClick значения больше нуля означают что были сделаны изменения
     private int lastUpdatePosition = -1;
+
+//переопределяем метод
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate( savedInstanceState );
+        //сообщаем экземпляру класса CrimeListFragment
+        //что он должен полкчать обратный вызов меню
+        setHasOptionsMenu( true );
+    }
 
     //Создаем фрагмент RecyclerView
     @Nullable
@@ -54,6 +66,14 @@ public class CrimeListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateUI();
+    }
+
+    //переопределяем метод создания меню
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu( menu, inflater );
+        //создаем меню в файле fragment_crime_list
+        inflater.inflate( R.menu.fragment_crime_list, menu );
     }
 
     private void updateUI() {
@@ -187,6 +207,35 @@ public class CrimeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+    }
+
+    //переопределяем метод выбраное меню
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //в цикл switch переадем id выбрана item (item.getItemId())
+        switch (item.getItemId()) {
+            //если Id совпадает с menu_item_new_crime
+            case R.id.menu_item_new_crime:
+                //Создаем новый экземпляр Crime
+                Crime crime = new Crime();
+                //у CrimeLab вызываем метод get(пробегает по всему списку
+                // и возвращает id объекта в списке) псоле чего вызываем
+                //addCrime для добавление экземпляра crime в коенц списка
+                CrimeLab.get( getActivity() ).addCrime( crime );
+                //Создаем Intent записываем а него интент с параметрами
+                //getActivity получить активити(найти нужную ативити)
+                //с id полученым из экземпляр класса Crime метода getId
+                Intent intent = CrimePagerActivity
+                        .newIntent( getActivity(), crime.getId() );
+                //Запустить активите с усатановлеными параметрами intent
+                startActivity( intent );
+                //вернуть true , то есть отбразить ативити
+                return true;
+            //если не найден id в case-ах выполняем
+            default:
+                //вернуть меню родительского класса
+                return super.onOptionsItemSelected( item );
         }
     }
 }
