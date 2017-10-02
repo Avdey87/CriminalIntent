@@ -19,6 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -122,8 +123,9 @@ public class CrimeFragment extends Fragment {
 
         //Получаем ссылку на кнопку и задаём в текст кнопки время
         mTimeButton = (Button) v.findViewById( R.id.crime_time );
-        //обновление даты
+        //обновление времени
         updateTime();
+        //установить слушатель на кнопку время
         mTimeButton.setOnClickListener( new View.OnClickListener() {
             //реализация нажатой кнопки
             @Override
@@ -172,27 +174,43 @@ public class CrimeFragment extends Fragment {
     //Метод для возвращенгия данных целевому фрагменту
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    //если переданный параметр resultCode не равен Activity.RESULT_OK
-        //
+        //если данны соответствуют текущим данным активити то про ретерн
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-        //есои ответ requestCode равен REQUEST_DATE
-        if (requestCode == REQUEST_DATE) {
-            //Создаем новую Date переменую
-            Date date = (Date) data
-                    //в которую устанавливаем данные полученные из класса
-                    //DatePickerFragment переменной EXTRA_DATE
-                    .getSerializableExtra( DatePickerFragment.EXTRA_DATE );
-            //в экземпляр объекта Crime mCrime в носим данный
-            //полученные в date
+        //если данные равны данны REQUEST_TIME
+        if (requestCode == REQUEST_TIME
+                // и получаем дата из TimePickerFragment не равна нулю
+                && data.getSerializableExtra
+                ( TimePickerFragment.EXTRA_TIME ) != null) {
+//устанавливаем времы в значение получаемо из TimePickerFragment
+            Date date = (Date) data.getSerializableExtra
+                    ( TimePickerFragment.EXTRA_TIME );
+//устанвливаем время в объект Crime
+            mCrime.setTime( date );
+            //обновить время
+            updateTime();
+        }
+
+//если requestCode соответствует  REQUEST_DATE и дата получаемая из DatePickerFragment
+        //не равна нулю
+        if (requestCode == REQUEST_DATE &&
+                data.getSerializableExtra( DatePickerFragment.EXTRA_DATE ) != null) {
+            //Устанвливаем дату полученую из DatePickerFragment
+            Date date = (Date) data.getSerializableExtra( DatePickerFragment.EXTRA_DATE );
+            //Создаем новую Calendar переменную в которую записываем инстенс
+            //получаемый из календаря
+            Calendar calendar = Calendar.getInstance();
+            //устанвливаем в календарь время
+            //из DatePickerFragment с переданным параметром date
+            calendar.setTime( date );
+            //устанвливаем в экземпляр оъекта Crime значение из calendar
             mCrime.setDate( date );
-            //обновляем дату
             updateDate();
         }
     }
 
-    //Мето добновления даты в заданном формате
+    //Метод обновления даты в заданном формате
     private void updateDate() {
         //устанавливаем текст в кнопку
         //установить текст вызываем DateFormat.format для форматирования даты
@@ -200,8 +218,11 @@ public class CrimeFragment extends Fragment {
         mDateButton.setText( DateFormat.format( "EEEE, MMM dd, yyyy", mCrime.getDate() ) );
     }
 
+    //Метод обновления времени
     private void updateTime() {
-        SimpleDateFormat tf = new SimpleDateFormat( "kk:mm:ss zzz" );
+        //устанавливаем формат выводы даты
+        SimpleDateFormat tf = new SimpleDateFormat( "kk:mm" );
+        //предаем установленный формат в текст кнопки
         mTimeButton.setText( tf.format( mCrime.getDate() ) );
     }
 }
