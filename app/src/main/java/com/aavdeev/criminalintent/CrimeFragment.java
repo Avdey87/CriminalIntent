@@ -224,5 +224,6 @@ public class CrimeFragment extends Fragment {
         SimpleDateFormat tf = new SimpleDateFormat( "kk:mm" );
         //предаем установленный формат в текст кнопки
         mTimeButton.setText( tf.format( mCrime.getDate() ) );
+
     }
 }
