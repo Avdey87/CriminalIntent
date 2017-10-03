@@ -153,7 +153,7 @@ public class CrimeFragment extends Fragment {
 
         mDeleteButtom = (Button) v.findViewById( R.id.delete_crime );
 
-        mDateButton.setOnClickListener( new View.OnClickListener() {
+        mDeleteButtom.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UUID crime = CrimeLab.get( getActivity() ).getCrime( v );
