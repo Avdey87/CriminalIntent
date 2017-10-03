@@ -32,6 +32,14 @@ public class CrimePagerActivity extends AppCompatActivity {
         return intent;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {
+            return;
+        }
+
+    }
+
     //создаем активность настройки хранятся в файле activity_crime_pager_view_pager
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +77,7 @@ public class CrimePagerActivity extends AppCompatActivity {
             }
         } );
         //в цикле пробегаем по всем списку mCrimes.size()
-        for (int i=0; i<mCrimes.size();i++) {
+        for (int i = 0; i < mCrimes.size(); i++) {
             //если находим экземплер Crime у которого Id совпадает с crimeId
             //в дополении intent
             if (mCrimes.get( i ).getId().equals( crimeId )) {

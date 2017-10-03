@@ -4,6 +4,7 @@ package com.aavdeev.criminalintent;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +29,17 @@ public class CrimeLab {
 
     }
 
+    public void deleteCrime(UUID id) {
+        Iterator<Crime> i = mCrimes.iterator();
+        while (i.hasNext()) {
+            Crime crime = i.next();
+            if (crime.getId().equals( id )) {
+                i.remove();
+                return;
+            }
+        }
+    }
+
     //Возвращает List Crime-ов (упорядочный список объектов Crime)
     public List<Crime> getCrimes() {
         return mCrimes;
@@ -42,4 +54,6 @@ public class CrimeLab {
         }
         return null;
     }
+
+
 }

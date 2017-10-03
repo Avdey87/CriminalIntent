@@ -32,6 +32,7 @@ public class CrimeFragment extends Fragment {
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
+    private Button mDeleteButtom;
     private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
 
@@ -147,6 +148,16 @@ public class CrimeFragment extends Fragment {
                 //показать диалог с 2 переданными параметрами ( fm, DIALOG_TIME )
                 //фрагмент и его значение.
                 dialog.show( fm, DIALOG_TIME );
+            }
+        } );
+
+        mDeleteButtom = (Button) v.findViewById( R.id.delete_crime );
+
+        mDateButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UUID crime = CrimeLab.get( getActivity() ).getCrime( v );
+                CrimeLab.get( getActivity() ).deleteCrime( crime );
             }
         } );
         //Получаем ссылку на галочку
