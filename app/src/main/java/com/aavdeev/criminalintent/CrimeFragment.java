@@ -21,6 +21,7 @@ import android.widget.EditText;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
@@ -156,8 +157,17 @@ public class CrimeFragment extends Fragment {
         mDeleteButtom.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UUID crime = CrimeLab.get( getActivity() ).getCrime( v );
-                CrimeLab.get( getActivity() ).deleteCrime( crime );
+                //Создаем экхземпляр объекта CrimeLab
+                CrimeLab crime = CrimeLab.get( getActivity() );
+
+                //вызываем у объекта deleteCrime и пердаем ему в качестве параметра
+                // id текущего объекта в списке
+                crime.deleteCrime( mCrime.getId() );
+
+                //завершаем текущую активити
+                getActivity().finish();
+
+
             }
         } );
         //Получаем ссылку на галочку
