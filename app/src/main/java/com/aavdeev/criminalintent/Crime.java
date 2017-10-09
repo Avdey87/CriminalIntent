@@ -13,8 +13,11 @@ public class Crime {
 
 
     public Crime() {
+        this( UUID.randomUUID() );
+    }
+    public Crime(UUID id) {
         //Генерируеем уникальный индефикатор
-        mId = UUID.randomUUID();
+        mId = id;
         mDate = new Date();
     }
 
