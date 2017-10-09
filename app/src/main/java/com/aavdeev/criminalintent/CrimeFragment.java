@@ -30,6 +30,8 @@ public class CrimeFragment extends Fragment {
     private static final int REQUEST_DATE = 0;
     private static final String DIALOG_TIME = "time";
     private static final int REQUEST_TIME = -1;
+    private static final String REQUEST_DELETE = "Delete";
+    private static final int DELETE = 0;
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
@@ -53,7 +55,6 @@ public class CrimeFragment extends Fragment {
         //возвращаем экземпляр класса CrimeFragment
         return fragment;
     }
-
 
 
     @Override
@@ -188,7 +189,6 @@ public class CrimeFragment extends Fragment {
         return v;
 
     }
-
 
 
     private void updateDate(CharSequence format) {

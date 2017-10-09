@@ -44,7 +44,9 @@ public class CrimeListFragment extends Fragment {
     //Создаем фрагмент RecyclerView
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         //Создаем view (отображение на экране)
         //передаем ей разметку fragment_crime_list, помещаем все эт ов контейнер
         // устнанавливаем значение отображение по умолчанию false

@@ -12,6 +12,10 @@ public class CrimeLab {
     private static CrimeLab sCrimeLab;
     private List<Crime> mCrimes;
 
+    public CrimeLab() {
+
+    }
+
     public void addCrime(Crime c) {
         mCrimes.add( c );
     }
@@ -23,7 +27,7 @@ public class CrimeLab {
         return sCrimeLab;
     }
 
-    private CrimeLab(Context context) {
+    public CrimeLab(Context context) {
         //Создаем пустой списко объектов Crime
         mCrimes = new ArrayList<>();
 
