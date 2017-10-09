@@ -55,7 +55,6 @@ public class CrimeFragment extends Fragment {
     }
 
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -64,6 +63,14 @@ public class CrimeFragment extends Fragment {
         UUID crimeId = (UUID) getArguments().getSerializable( ARG_CRIME_ID );
         //mCrime записываем id элемента списка (помещаем в переменную объект списка)
         mCrime = CrimeLab.get( getActivity() ).getCrime( crimeId );
+    }
+
+    //обновляем список mCrime
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        CrimeLab.get( getActivity() ).updateCrime( mCrime );
     }
 
     @Nullable
@@ -188,7 +195,6 @@ public class CrimeFragment extends Fragment {
         return v;
 
     }
-
 
 
     private void updateDate(CharSequence format) {
