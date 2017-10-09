@@ -46,16 +46,11 @@ public class CrimeLab {
         return sCrimeLab;
     }
 
-
-    public void deleteCrime(UUID id) {
-        /*Iterator<Crime> i = mCrimes.iterator();
-        while (i.hasNext()) {
-            Crime crime = i.next();
-            if (crime.getId().equals( id )) {
-                i.remove();
-                return;
-            }
-        }*/
+//Удаление из базы данных
+    public void deleteCrime(Crime crime) {
+        mDatabase.delete( CrimeDbSchema.CrimeTable.NAME,
+                CrimeDbSchema.CrimeTable.Cols.UUID + " = ?",
+                new String[]{crime.getId().toString()} );
     }
 
     //Возвращает List Crime-ов (упорядочный список объектов Crime)

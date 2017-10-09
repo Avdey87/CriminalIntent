@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -162,18 +163,18 @@ public class CrimeFragment extends Fragment {
 
         mDeleteButtom = (Button) v.findViewById( R.id.delete_crime );
 
-        mDeleteButtom.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Создаем экхземпляр объекта CrimeLab
-                CrimeLab crime = CrimeLab.get( getActivity() );
+                       mDeleteButtom.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Создаем экхземпляр объекта CrimeLab
+                        CrimeLab crime = CrimeLab.get( getActivity() );
 
-                //вызываем у объекта deleteCrime и пердаем ему в качестве параметра
-                // id текущего объекта в списке
-                crime.deleteCrime( mCrime.getId() );
-                crime.getCrimes();
-                //завершаем текущую активити
-                getActivity().finish();
+                        //вызываем у объекта deleteCrime и пердаем ему в качестве параметра
+                        // id текущего объекта в списке
+                       // crime.deleteCrime( mCrime.getId() );
+                        crime.getCrimes();
+                        //завершаем текущую активити
+                        getActivity().finish();
 
 
             }
@@ -255,6 +256,20 @@ public class CrimeFragment extends Fragment {
         SimpleDateFormat tf = new SimpleDateFormat( "kk:mm" );
         //предаем установленный формат в текст кнопки
         mTimeButton.setText( tf.format( mCrime.getDate() ) );
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_crime:
+
+                CrimeLab.get( getActivity() ).deleteCrime( mCrime );
+                getActivity().finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected( item );
+        }
 
     }
 }
