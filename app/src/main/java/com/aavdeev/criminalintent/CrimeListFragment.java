@@ -74,8 +74,9 @@ public class CrimeListFragment extends Fragment {
 
     @Override
     public void onResume() {
-        super.onResume();
         updateUI();
+        super.onResume();
+
     }
 
     @Override
@@ -222,6 +223,7 @@ public class CrimeListFragment extends Fragment {
         private List<Crime> mCrimes;
 
         public CrimeAdapter(List<Crime> crimes) {
+
             mCrimes = crimes;
         }
 

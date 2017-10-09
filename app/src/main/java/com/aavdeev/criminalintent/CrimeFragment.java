@@ -55,6 +55,7 @@ public class CrimeFragment extends Fragment {
     }
 
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -163,7 +164,7 @@ public class CrimeFragment extends Fragment {
                 //вызываем у объекта deleteCrime и пердаем ему в качестве параметра
                 // id текущего объекта в списке
                 crime.deleteCrime( mCrime.getId() );
-
+                crime.getCrimes();
                 //завершаем текущую активити
                 getActivity().finish();
 
@@ -187,6 +188,8 @@ public class CrimeFragment extends Fragment {
         return v;
 
     }
+
+
 
     private void updateDate(CharSequence format) {
         mDateButton.setText( format );
@@ -216,7 +219,8 @@ public class CrimeFragment extends Fragment {
 //если requestCode соответствует  REQUEST_DATE и дата получаемая из DatePickerFragment
         //не равна нулю
         if (requestCode == REQUEST_DATE &&
-                data.getSerializableExtra( DatePickerFragment.EXTRA_DATE ) != null) {
+                data.getSerializableExtra
+                        ( DatePickerFragment.EXTRA_DATE ) != null) {
             //Устанвливаем дату полученую из DatePickerFragment
             Date date = (Date) data.getSerializableExtra( DatePickerFragment.EXTRA_DATE );
             //Создаем новую Calendar переменную в которую записываем инстенс
