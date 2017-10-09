@@ -35,10 +35,10 @@ public class CrimeListFragment extends Fragment {
     //переопределяем метод
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate( savedInstanceState );
         //сообщаем экземпляру класса CrimeListFragment
         //что он должен полкчать обратный вызов меню
-        setHasOptionsMenu(true);
+        setHasOptionsMenu( true );
     }
 
     //Создаем фрагмент RecyclerView
@@ -48,11 +48,11 @@ public class CrimeListFragment extends Fragment {
         //Создаем view (отображение на экране)
         //передаем ей разметку fragment_crime_list, помещаем все эт ов контейнер
         // устнанавливаем значение отображение по умолчанию false
-        View view = inflater.inflate(R.layout.fragment_crime_list, container,
-                false);
+        View view = inflater.inflate( R.layout.fragment_crime_list, container,
+                false );
         // в mCrimeRecycleView записываем значение типо RecyclerView
         //в котором создаем view с разметкой определенной в crime_recycler_view
-        mCrimeRecycleView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
+        mCrimeRecycleView = (RecyclerView) view.findViewById( R.id.crime_recycler_view );
         //устанавливаем значения mCrimeRecycleView в LayoutManager
         // создаем новый LinearLayoutManager который получает даный
         //из активити getActivity
@@ -60,12 +60,12 @@ public class CrimeListFragment extends Fragment {
         //RecycleView не отображает элементы на экране эту задачу он передаёт
         //LayoutManager. LayoutManager управляет позиционированием и определяет поведение
         //прокрутки
-        mCrimeRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mCrimeRecycleView.setLayoutManager( new LinearLayoutManager( getActivity() ) );
 
         //если сохраеный инстенс не равен нулю
         if (savedInstanceState != null) {
             //присваеваем mSubtitleVisible значение SAVED_SUBTITLE_VISIBLE
-            mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
+            mSubtitleVisible = savedInstanceState.getBoolean( SAVED_SUBTITLE_VISIBLE );
         }
         updateUI();
         //Возвращаем view
@@ -81,39 +81,39 @@ public class CrimeListFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(SAVED_SUBTITLE_VISIBLE, mSubtitleVisible);
+        super.onSaveInstanceState( outState );
+        outState.putBoolean( SAVED_SUBTITLE_VISIBLE, mSubtitleVisible );
     }
 
     //переопределяем метод создания меню
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+        super.onCreateOptionsMenu( menu, inflater );
         //создаем меню в файле fragment_crime_list
-        inflater.inflate(R.menu.fragment_crime_list, menu);
+        inflater.inflate( R.menu.fragment_crime_list, menu );
 
         //иницилизируем повторное создание кнопок действия при нажатии
-        MenuItem subtitleItem = menu.findItem(R.id.menu_item_show_subtitle);
+        MenuItem subtitleItem = menu.findItem( R.id.menu_item_show_subtitle );
         //если кнопка нажата выводить текст размер списка скрыт
         if (mSubtitleVisible) {
-            subtitleItem.setTitle(R.string.hide_subtitle);
+            subtitleItem.setTitle( R.string.hide_subtitle );
         } else {
             //показать текст размер списка
-            subtitleItem.setTitle(R.string.show_subtitle);
+            subtitleItem.setTitle( R.string.show_subtitle );
         }
     }
 
     //метод для получение количества экземпляров Crime в списке
     private void updateSubtitle() {
         //Создаем экземпляр CrimeLab и присваеваем ему значение
-        CrimeLab crimeLab = CrimeLab.get(getActivity());
+        CrimeLab crimeLab = CrimeLab.get( getActivity() );
         //создаем переменную типа int записываем в нее размер списка Crime
         //полученый из crimeLab.getCrimes().size();
         int crimeCount = crimeLab.getCrimes().size();
         // ооздаем string переменную и устанавливаем в нее
         //строковое значение полученное из crimeCount(размер списка Crime)
         //используем для отображения subtitle_format
-        String subtitle = getString(R.string.subtitle_format, crimeCount);
+        String subtitle = getString( R.string.subtitle_format, crimeCount );
 
         //если не mSubtitleVisible то есть значение false
         if (!mSubtitleVisible) {
@@ -124,13 +124,13 @@ public class CrimeListFragment extends Fragment {
         //создаем активити AppCompatActivity типа
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         //устанавливаем в экщенбар созданного активити значение subtitle (размер списка)
-        activity.getSupportActionBar().setSubtitle(subtitle);
+        activity.getSupportActionBar().setSubtitle( subtitle );
     }
 
     private void updateUI() {
         //Создаем объект типа CrimeLab
         //записываем в него новую активити
-        CrimeLab crimeLab = CrimeLab.get(getActivity());
+        CrimeLab crimeLab = CrimeLab.get( getActivity() );
         //Создаем список и в который записываем данные
         //из getCrimes (создается список из 100 элементов)
         List<Crime> crimes = crimeLab.getCrimes();
@@ -138,20 +138,22 @@ public class CrimeListFragment extends Fragment {
         if (mAdapter == null) {
             //создаме переменную в которую записываем
             //список объектов Crime
-            mAdapter = new CrimeAdapter(crimes);
+            mAdapter = new CrimeAdapter( crimes );
             //у станвливаем в mCrimeRecycleView занчения mAdapter
             //в прокручиваемый список помещаем списко Crimes
-            mCrimeRecycleView.setAdapter(mAdapter);
+            mCrimeRecycleView.setAdapter( mAdapter );
         } else {
             //если lastUpdatePosition больше -1 значит вносились изменения
             if (lastUpdatePosition > -1) {
                 //обновляем состояние объекта списка Crimes вызываем
                 //для объекта списка Crime, не всего списка Crimes
-                mAdapter.notifyItemChanged(lastUpdatePosition);
+                mAdapter.notifyItemChanged( lastUpdatePosition );
                 //после обноления возвращаем состояние объекта списка в состояние не менялся, устанавливаем отрицательное значение
                 lastUpdatePosition = -1;
             } else {
-
+                //закрепляем отображение CrimeListFragment
+                mAdapter.setmCrimes( crimes );
+                //Отслеживаем изменение состояние адаптера
                 mAdapter.notifyDataSetChanged();
             }
             //обновляем значения в меню
@@ -173,19 +175,19 @@ public class CrimeListFragment extends Fragment {
 
 
         public CrimeHolder(View itemView) {
-            super(itemView);
+            super( itemView );
             //устанавливаем слушатель на itemView
-            itemView.setOnClickListener(this);
+            itemView.setOnClickListener( this );
             //Присваеваем mTitleTextView объект типа TextView
             // и прикрепляем шаблон отображения из xml файла (list_item_crime)
             mTitleTextView = (TextView) itemView.findViewById
-                    (R.id.list_item_crime_title_text_view);
+                    ( R.id.list_item_crime_title_text_view );
             // -//-
             mDateTextView = (TextView) itemView.findViewById
-                    (R.id.list_item_crime_date_text_view);
+                    ( R.id.list_item_crime_date_text_view );
             // -//-
             mSolvedCheckBox = (CheckBox) itemView.findViewById
-                    (R.id.list_item_crime_solved_check_box);
+                    ( R.id.list_item_crime_solved_check_box );
         }
 
         public void bindCrime(Crime crime) {
@@ -193,13 +195,13 @@ public class CrimeListFragment extends Fragment {
             //значение crime (переданное методу bindCrime)
             mCrime = crime;
             //устанавливаем текст для mTitleTextView полученный от  mCrime.getTitle()
-            mTitleTextView.setText(mCrime.getTitle());
+            mTitleTextView.setText( mCrime.getTitle() );
             // устанавливаем текст(дату) и выводим это в строку полученные
             // от mCrime.getDate().toString()
-            mDateTextView.setText(mCrime.getDate().toString());
+            mDateTextView.setText( mCrime.getDate().toString() );
             //устанавливаем состояние флага mSolvedCheckBox
             //полученого из mCrime.isSolved()
-            mSolvedCheckBox.setChecked(mCrime.isSolved());
+            mSolvedCheckBox.setChecked( mCrime.isSolved() );
         }
 
 
@@ -207,11 +209,11 @@ public class CrimeListFragment extends Fragment {
         public void onClick(View v) {
 //создаем новый Intent которуму присваем класс CrimePagerActivity
             //и передаем в качестве параметра индетификатор mCrime (элемент списка)
-            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
+            Intent intent = CrimePagerActivity.newIntent( getActivity(), mCrime.getId() );
             //перепменной lastUpdatePosition присваем текущее состояние
             //объекта списка
             lastUpdatePosition = this.getAdapterPosition();
-            startActivity(intent);
+            startActivity( intent );
         }
     }
 
@@ -233,12 +235,12 @@ public class CrimeListFragment extends Fragment {
         public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             //Создаем LayoutInflater и заполняем его данными которые получаем
             //из Активити getActivity
-            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            LayoutInflater layoutInflater = LayoutInflater.from( getActivity() );
             //Создаем объект View упаковываем его в ViewHolder
             //макет для отображения View определен в list_item_crime
             View view = layoutInflater
-                    .inflate(R.layout.list_item_crime, parent, false);
-            return new CrimeHolder(view);
+                    .inflate( R.layout.list_item_crime, parent, false );
+            return new CrimeHolder( view );
         }
 
         //Связывает представление View объекта ViewHolder с объектом модели
@@ -249,18 +251,23 @@ public class CrimeListFragment extends Fragment {
             //Создаем переменную типа Crime в которую записываем позицию
             //элемента Crime в массиве
             //позиция определяется индексом объекта Crime в массиве
-            Crime crime = mCrimes.get(position);
+            Crime crime = mCrimes.get( position );
             //объект типа CrimeHolder (holder)
             //вызывает метод bindCrime
             //bindCrime устанавливает Title, дату,
             // состояние флажка
-            holder.bindCrime(crime);
+            holder.bindCrime( crime );
         }
 
         //возвращает размер списка mCrimes
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+
+        //Закрепляем отображаемые в CrimeListFragments список
+        public void setmCrimes(List<Crime> crimes) {
+            mCrimes = crimes;
         }
     }
 
@@ -276,14 +283,14 @@ public class CrimeListFragment extends Fragment {
                 //у CrimeLab вызываем метод get(пробегает по всему списку
                 // и возвращает id объекта в списке) псоле чего вызываем
                 //addCrime для добавление экземпляра crime в коенц списка
-                CrimeLab.get(getActivity()).addCrime(crime);
+                CrimeLab.get( getActivity() ).addCrime( crime );
                 //Создаем Intent записываем а него интент с параметрами
                 //getActivity получить активити(найти нужную ативити)
                 //с id полученым из экземпляр класса Crime метода getId
                 Intent intent = CrimePagerActivity
-                        .newIntent(getActivity(), crime.getId());
+                        .newIntent( getActivity(), crime.getId() );
                 //Запустить активите с усатановлеными параметрами intent
-                startActivity(intent);
+                startActivity( intent );
                 //вернуть true , то есть отбразить ативити
                 return true;
             //при нажатии на menu_item_show_subtitle
@@ -300,7 +307,7 @@ public class CrimeListFragment extends Fragment {
             //если не найден id в case-ах выполняем
             default:
                 //вернуть меню родительского класса
-                return super.onOptionsItemSelected(item);
+                return super.onOptionsItemSelected( item );
         }
     }
 }
