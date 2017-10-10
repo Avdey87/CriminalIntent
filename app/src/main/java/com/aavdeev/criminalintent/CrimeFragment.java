@@ -245,6 +245,46 @@ public class CrimeFragment extends Fragment {
         mDateButton.setText( DateFormat.format( "EEEE, MMM dd, yyyy", mCrime.getDate() ) );
     }
 
+    //модот для создание отчета из 4 строк объедененных в одну
+    private String getCrimeReport() {
+        //создаем пустую строку solvedString
+        String solvedString = null;
+       //если установлена галочка тогда
+        if (mCrime.isSolved()) {
+            //брем значение crime_report_solved из файла string
+            solvedString = getString( R.string.crime_report_solved );
+        }
+        //елси галочка отсутсвует тода берем значение crime_report_unsolved
+        //из файла string
+        else {
+            solvedString = getString( R.string.crime_report_unsolved );
+        }
+        //Создаем строковую переменную dateFormat
+        String dateFormat = "EEE, MMM, dd";
+        //записываем в нее дату в формате "EEE, MMM, dd"
+        String dateString = DateFormat.format( dateFormat, mCrime.getDate() ).toString();
+//создаме строковую переменную для записи в нее преступника
+        String suspect = mCrime.getSuspect();
+        //если поле преступник пустое
+        if (suspect == null) {
+            //в переменную записываем занчине crime_report_no_suspect
+            //из файла string
+            suspect = getString( R.string.crime_report_no_suspect );
+        }
+        //если в поле есть значение, записываем щанчение crime_report_suspect
+        //из файла string + suspect(имя преступника)
+        else {
+            suspect = getString( R.string.crime_report_suspect, suspect );
+        }
+
+        //Создаем строковую переменную для создание отчета
+        //в нее пишим значение crime_report из файла string
+        //так же шапку отчета, дату , раскрыто или нет, преступник
+        String report = getString( R.string.crime_report, mCrime.getTitle(), dateString, solvedString, suspect );
+        //возвращаем отчет (строковое значение)
+        return report;
+    }
+
     //Метод обновления времени
     private void updateTime() {
         //устанавливаем формат выводы даты

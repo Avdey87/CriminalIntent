@@ -9,7 +9,9 @@ public class Crime {
     private String mTitle;
     private Date mDate;
     private boolean mSolved;
+    private String mSuspect;//переменная для хранения имени подозреваемого
     private Date time;
+
 
 
     public Crime() {
@@ -19,6 +21,14 @@ public class Crime {
         //Генерируеем уникальный индефикатор
         mId = id;
         mDate = new Date();
+    }
+//пполучить имя подозреваемого
+    public String getSuspect() {
+        return mSuspect;
+    }
+//установить имя подозреваемого
+    public void setSuspect(String suspect) {
+        mSuspect = suspect;
     }
 
     public Date getDate() {
