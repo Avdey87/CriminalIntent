@@ -166,14 +166,9 @@ public class CrimeFragment extends Fragment {
                        mDeleteButtom.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Создаем экхземпляр объекта CrimeLab
-                        CrimeLab crime = CrimeLab.get( getActivity() );
-
-                        //вызываем у объекта deleteCrime и пердаем ему в качестве параметра
-                        // id текущего объекта в списке
-                       // crime.deleteCrime( mCrime.getId() );
-                        crime.getCrimes();
-                        //завершаем текущую активити
+                        //получаем id текущего crime и удаляем его
+                        CrimeLab.get( getActivity() ).deleteCrime( mCrime );
+                        //закрываем активити, переходим к главному.
                         getActivity().finish();
 
 
@@ -259,17 +254,5 @@ public class CrimeFragment extends Fragment {
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.delete_crime:
 
-                CrimeLab.get( getActivity() ).deleteCrime( mCrime );
-                getActivity().finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected( item );
-        }
-
-    }
 }
