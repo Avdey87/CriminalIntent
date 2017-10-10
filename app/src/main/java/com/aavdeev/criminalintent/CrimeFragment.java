@@ -3,7 +3,11 @@ package com.aavdeev.criminalintent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,12 +35,17 @@ public class CrimeFragment extends Fragment {
     private static final int REQUEST_DATE = 0;
     private static final String DIALOG_TIME = "time";
     private static final int REQUEST_TIME = -1;
+    private static final int REQUEST_CONTACT = 1;
+
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private Button mDeleteButtom;
     private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
+    private Button mReportButton;
+    private Button mSuspectButton;
+
 
     //Прив вызове CrimeFragment вызывается CrimeFragment.newInstance
     //в который передается занчение тапа UUID (индетификатор)
@@ -187,7 +196,54 @@ public class CrimeFragment extends Fragment {
                 mCrime.setSolved( isChecked );
             }
         } );
+//определяем кнопку
+        mReportButton = (Button) v.findViewById( R.id.crime_report );
+        //Устанавливаем на кнопку слушателя
+        mReportButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //записываем в интент переменную
+                Intent i = new Intent( Intent.ACTION_SEND );
+                //присваеваем тип переменной
+                i.setType( "text/plain" );
+                //записываем в переменную значение из интента и отчет
+                i.putExtra( Intent.EXTRA_TEXT, getCrimeReport() );
+                //записываем в переменную объект строка
+                i.putExtra( Intent.EXTRA_SUBJECT, getString( R.string.crime_report_subject ) );
+               //запускаем ативити передав ей в качестве параметра переменную
+                i = Intent.createChooser( i, getString( R.string.send_report ) );
+                startActivity( i );
+            }
+        } );
+        //записываем в pickContact значение которое будем передавать в ActivityForResult
+        //для поиска пирложений на устройстве которые могут выполнить действие  CONTENT_URI
+        //Поиск контактов на телефоне
+        final Intent pickContact = new Intent( Intent.ACTION_PICK,
+                ContactsContract.Contacts.CONTENT_URI );
 
+
+        //определяем кнопку
+        mSuspectButton = (Button) v.findViewById( R.id.crime_suspect );
+        //устанавливаем слушаетель на кнопку
+        mSuspectButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Запускаем поиск активити с экшеном  pickContact
+                startActivityForResult( pickContact, REQUEST_CONTACT );
+            }
+        } );
+        //если значение Suspect(преступник) не пустое
+        if (mCrime.getSuspect() != null) {
+            //устанавливаем текст в кнопку взятый из mCrime.getSuspect()
+            mSuspectButton.setText( mCrime.getSuspect() );
+        }
+//записываем в переменную типа PackageManager данные
+        PackageManager packageManager = getActivity().getPackageManager();
+        if (packageManager.resolveActivity( pickContact,
+                //флаг поиска приложения MATCH_DEFAULT_ONLY
+                PackageManager.MATCH_DEFAULT_ONLY ) == null) {
+            mSuspectButton.setEnabled( false );
+        }
         return v;
 
     }
@@ -234,6 +290,26 @@ public class CrimeFragment extends Fragment {
             //устанвливаем в экземпляр оъекта Crime значение из calendar
             mCrime.setDate( date );
             updateDate();
+        } else if (requestCode == REQUEST_CONTACT && data != null) {
+            Uri contactUri = data.getData();
+            //Определение полей, значение которыйх
+            //должно быть возвращены запросам
+            String[] queryFields = new String[]{
+                    ContactsContract.Contacts.DISPLAY_NAME
+            };
+            //Выполнение запроса - contactUri здесь выполняет функции
+            //условия "where" хде
+            Cursor c = getActivity().getContentResolver()
+                    .query( contactUri, queryFields, null, null, null );
+            try{
+                //проверка полученных результатов
+                c.moveToFirst();
+                String suspect = c.getString( 0 );
+                mCrime.getSuspect();
+                mSuspectButton.setText( suspect );
+            }finally {
+                c.close();
+            }
         }
     }
 
