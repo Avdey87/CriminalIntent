@@ -11,6 +11,7 @@ import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ShareCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -202,7 +203,13 @@ public class CrimeFragment extends Fragment {
         mReportButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //записываем в интент переменную
+                Intent i = ShareCompat.IntentBuilder.from( getActivity() )
+                        .setType( "text/plain" )
+                        .getIntent();
+                startActivity( i );
+
+
+            /*    //записываем в интент переменную
                 Intent i = new Intent( Intent.ACTION_SEND );
                 //присваеваем тип переменной
                 i.setType( "text/plain" );
@@ -212,8 +219,8 @@ public class CrimeFragment extends Fragment {
                 i.putExtra( Intent.EXTRA_SUBJECT, getString( R.string.crime_report_subject ) );
                //запускаем ативити передав ей в качестве параметра переменную
                 i = Intent.createChooser( i, getString( R.string.send_report ) );
-                startActivity( i );
-            }
+                startActivity( i );*/
+        }
         } );
         //записываем в pickContact значение которое будем передавать в ActivityForResult
         //для поиска пирложений на устройстве которые могут выполнить действие  CONTENT_URI
