@@ -11,8 +11,11 @@ public class Crime {
     private boolean mSolved;
     private String mSuspect;//переменная для хранения имени подозреваемого
     private Date time;
+    private String mContact;
 
-
+    public String getContact() {
+        return mContact;
+    }
 
     public Crime() {
         this( UUID.randomUUID() );
@@ -29,6 +32,10 @@ public class Crime {
 //установить имя подозреваемого
     public void setSuspect(String suspect) {
         mSuspect = suspect;
+    }
+
+    public void setContact(String contact) {
+        mContact = contact;
     }
 
     public Date getDate() {

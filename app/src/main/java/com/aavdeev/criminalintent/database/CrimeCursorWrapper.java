@@ -2,6 +2,7 @@ package com.aavdeev.criminalintent.database;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.provider.ContactsContract;
 
 import com.aavdeev.criminalintent.Crime;
 
@@ -21,7 +22,7 @@ public class CrimeCursorWrapper extends CursorWrapper {
         long date = getLong( getColumnIndex( CrimeDbSchema.CrimeTable.Cols.DATE ) );
         int isSolved = getInt( getColumnIndex( CrimeDbSchema.CrimeTable.Cols.SOLVED ) );
         String suspect = getString( getColumnIndex( CrimeDbSchema.CrimeTable.Cols.SUSPECT ) );
-
+        String contact = getString( getColumnIndex( ContactsContract.CommonDataKinds.Phone._ID ) );
         //Создаем экземпляр  Crime
         Crime crime = new Crime( UUID.fromString( uuidString ) );
         //Устанавливаем полученные значения в crime
@@ -29,6 +30,7 @@ public class CrimeCursorWrapper extends CursorWrapper {
         crime.setDate( new Date( date ) );
         crime.setSolved( isSolved != 0 );
         crime.setSuspect( suspect );
+        crime.setContact( contact );
         return crime;
     }
 }

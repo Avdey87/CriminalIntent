@@ -46,6 +46,7 @@ public class CrimeFragment extends Fragment {
     private CheckBox mSolvedCheckBox;
     private Button mReportButton;
     private Button mSuspectButton;
+    private Button mCallButton;
 
 
     //Прив вызове CrimeFragment вызывается CrimeFragment.newInstance
@@ -173,13 +174,13 @@ public class CrimeFragment extends Fragment {
 
         mDeleteButtom = (Button) v.findViewById( R.id.delete_crime );
 
-                       mDeleteButtom.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //получаем id текущего crime и удаляем его
-                        CrimeLab.get( getActivity() ).deleteCrime( mCrime );
-                        //закрываем активити, переходим к главному.
-                        getActivity().finish();
+        mDeleteButtom.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //получаем id текущего crime и удаляем его
+                CrimeLab.get( getActivity() ).deleteCrime( mCrime );
+                //закрываем активити, переходим к главному.
+                getActivity().finish();
 
 
             }
@@ -203,13 +204,9 @@ public class CrimeFragment extends Fragment {
         mReportButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = ShareCompat.IntentBuilder.from( getActivity() )
-                        .setType( "text/plain" )
-                        .getIntent();
-                startActivity( i );
 
 
-            /*    //записываем в интент переменную
+                //записываем в интент переменную
                 Intent i = new Intent( Intent.ACTION_SEND );
                 //присваеваем тип переменной
                 i.setType( "text/plain" );
@@ -217,16 +214,30 @@ public class CrimeFragment extends Fragment {
                 i.putExtra( Intent.EXTRA_TEXT, getCrimeReport() );
                 //записываем в переменную объект строка
                 i.putExtra( Intent.EXTRA_SUBJECT, getString( R.string.crime_report_subject ) );
-               //запускаем ативити передав ей в качестве параметра переменную
+                //запускаем ативити передав ей в качестве параметра переменную
                 i = Intent.createChooser( i, getString( R.string.send_report ) );
-                startActivity( i );*/
-        }
+                startActivity( i );
+            }
         } );
+
+
         //записываем в pickContact значение которое будем передавать в ActivityForResult
         //для поиска пирложений на устройстве которые могут выполнить действие  CONTENT_URI
         //Поиск контактов на телефоне
         final Intent pickContact = new Intent( Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI );
+
+        final Intent pickContactCall = new Intent( Intent.ACTION_CALL,
+                ContactsContract.Contacts.CONTENT_URI );
+
+        mCallButton = (Button) v.findViewById( R.id.crime_call );
+        mCallButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivityForResult( pickContactCall, REQUEST_CONTACT );
+            }
+        } );
 
 
         //определяем кнопку
@@ -251,6 +262,8 @@ public class CrimeFragment extends Fragment {
                 PackageManager.MATCH_DEFAULT_ONLY ) == null) {
             mSuspectButton.setEnabled( false );
         }
+
+
         return v;
 
     }
@@ -308,13 +321,13 @@ public class CrimeFragment extends Fragment {
             //условия "where" хде
             Cursor c = getActivity().getContentResolver()
                     .query( contactUri, queryFields, null, null, null );
-            try{
+            try {
                 //проверка полученных результатов
                 c.moveToFirst();
                 String suspect = c.getString( 0 );
                 mCrime.getSuspect();
                 mSuspectButton.setText( suspect );
-            }finally {
+            } finally {
                 c.close();
             }
         }
@@ -332,7 +345,7 @@ public class CrimeFragment extends Fragment {
     private String getCrimeReport() {
         //создаем пустую строку solvedString
         String solvedString = null;
-       //если установлена галочка тогда
+        //если установлена галочка тогда
         if (mCrime.isSolved()) {
             //брем значение crime_report_solved из файла string
             solvedString = getString( R.string.crime_report_solved );
