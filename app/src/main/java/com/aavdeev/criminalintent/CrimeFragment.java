@@ -227,15 +227,14 @@ public class CrimeFragment extends Fragment {
         final Intent pickContact = new Intent( Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI );
 
-        final Intent pickContactCall = new Intent( Intent.ACTION_CALL,
-                Uri.parse( ContactsContract.Contacts.LOOKUP_KEY ) );
+
 
         mCallButton = (Button) v.findViewById( R.id.crime_call );
         mCallButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                startActivityForResult( pickContactCall, REQUEST_CONTACT );
+
             }
         } );
 
@@ -276,60 +275,79 @@ public class CrimeFragment extends Fragment {
     //Метод для возвращенгия данных целевому фрагменту
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //если данны соответствуют текущим данным активити то про ретерн
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-        //если данные равны данны REQUEST_TIME
-        if (requestCode == REQUEST_TIME
-                // и получаем дата из TimePickerFragment не равна нулю
-                && data.getSerializableExtra
-                ( TimePickerFragment.EXTRA_TIME ) != null) {
-//устанавливаем времы в значение получаемо из TimePickerFragment
-            Date date = (Date) data.getSerializableExtra
-                    ( TimePickerFragment.EXTRA_TIME );
-//устанвливаем время в объект Crime
-            mCrime.setTime( date );
-            //обновить время
-            updateTime();
-        }
 
-//если requestCode соответствует  REQUEST_DATE и дата получаемая из DatePickerFragment
-        //не равна нулю
-        if (requestCode == REQUEST_DATE &&
-                data.getSerializableExtra
-                        ( DatePickerFragment.EXTRA_DATE ) != null) {
-            //Устанвливаем дату полученую из DatePickerFragment
-            Date date = (Date) data.getSerializableExtra( DatePickerFragment.EXTRA_DATE );
-            //Создаем новую Calendar переменную в которую записываем инстенс
-            //получаемый из календаря
-            Calendar calendar = Calendar.getInstance();
-            //устанвливаем в календарь время
-            //из DatePickerFragment с переданным параметром date
-            calendar.setTime( date );
-            //устанвливаем в экземпляр оъекта Crime значение из calendar
-            mCrime.setDate( date );
+        if (requestCode == REQUEST_DATE) {
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mCrime.setDate(date);
             updateDate();
         } else if (requestCode == REQUEST_CONTACT && data != null) {
+            String contactLookupKey;
             Uri contactUri = data.getData();
-            //Определение полей, значение которыйх
-            //должно быть возвращены запросам
-            String[] queryFields = new String[]{
+
+            // Specify which field you want your query to return values for
+            String[] queryFields = new String[] {
+                    ContactsContract.Contacts.LOOKUP_KEY,
                     ContactsContract.Contacts.DISPLAY_NAME
             };
-            //Выполнение запроса - contactUri здесь выполняет функции
-            //условия "where" хде
+
+            // Perform your query - the contactUri is like a "where" clause here
             Cursor c = getActivity().getContentResolver()
-                    .query( contactUri, queryFields, null, null, null );
+                    .query(contactUri, queryFields, null, null, null);
+
             try {
-                //проверка полученных результатов
+                // Double-check that you actually gor results
+                if (c.getCount() == 0) {
+                    return;
+                }
+
+                // pull out the data of the first row that is your ID and suspect's name
                 c.moveToFirst();
-                String suspect = c.getString( 0 );
-                mCrime.getSuspect();
-                mSuspectButton.setText( suspect );
+                int lookupColumn = c.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY);
+                int nameColumn = c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+
+                contactLookupKey = c.getString(lookupColumn);
+                String suspect = c.getString(nameColumn);
+
+                mCrime.setSuspect(suspect);
+                mSuspectButton.setText(suspect);
             } finally {
                 c.close();
             }
+
+			/*
+			 ** Now: find phone number
+			 */
+
+            contactUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+            queryFields = new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER };
+
+            // Perform your query
+            c = getActivity().getContentResolver()
+                    .query(contactUri,
+                            queryFields,
+                            ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY + " = ? ",   // where clause
+                            new String[] { contactLookupKey },   // where clause args
+                            null);  // sort by
+
+            try {
+                // Double-check that you actually gor results
+                if (c.getCount() == 0) {
+                    return;
+                }
+
+                // pull out the data of the first row that is phone number
+                c.moveToFirst();
+                String phone = c.getString(0);
+
+                mCallButton.setEnabled(true);
+                mCrime.setContact(phone  );
+            } finally {
+                c.close();
+            }
+
         }
     }
 
