@@ -228,7 +228,7 @@ public class CrimeFragment extends Fragment {
                 ContactsContract.Contacts.CONTENT_URI );
 
         final Intent pickContactCall = new Intent( Intent.ACTION_CALL,
-                ContactsContract.Contacts.CONTENT_URI );
+                Uri.parse( ContactsContract.Contacts.LOOKUP_KEY ) );
 
         mCallButton = (Button) v.findViewById( R.id.crime_call );
         mCallButton.setOnClickListener( new View.OnClickListener() {

@@ -32,13 +32,14 @@ public class CrimePagerActivity extends AppCompatActivity {
         return intent;
     }
 
-    @Override
+  /*  @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (data == null) {
             return;
         }
 
-    }
+    }*/
 
     //создаем активность настройки хранятся в файле activity_crime_pager_view_pager
     @Override
