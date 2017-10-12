@@ -227,14 +227,14 @@ public class CrimeFragment extends Fragment {
         final Intent pickContact = new Intent( Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI );
 
-
+       final Intent call = new Intent( Intent.ACTION_CALL,  ContactsContract.Contacts.CONTENT_URI  );
 
         mCallButton = (Button) v.findViewById( R.id.crime_call );
         mCallButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent( Intent.ACTION_CALL, Uri.parse( "tel:13456789" ) );
-                startActivity( intent );
+                startActivityForResult( call, 98954 );
+
             }
         } );
 
