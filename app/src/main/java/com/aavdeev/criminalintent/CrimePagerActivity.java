@@ -3,6 +3,7 @@ package com.aavdeev.criminalintent;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -31,6 +32,10 @@ public class CrimePagerActivity extends AppCompatActivity {
         intent.putExtra( EXTRA_CRIME_ID, crimeId );
         return intent;
     }
+
+
+
+
 
   /*  @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

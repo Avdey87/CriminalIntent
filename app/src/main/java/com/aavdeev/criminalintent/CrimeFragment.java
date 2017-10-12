@@ -233,8 +233,8 @@ public class CrimeFragment extends Fragment {
         mCallButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                Intent intent = new Intent( Intent.ACTION_CALL, Uri.parse( "tel:13456789" ) );
+                startActivity( intent );
             }
         } );
 
@@ -275,80 +275,72 @@ public class CrimeFragment extends Fragment {
     //Метод для возвращенгия данных целевому фрагменту
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //если данны соответствуют текущим данным активити то про ретерн
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
+        //если данные равны данны REQUEST_TIME
+        if (requestCode == REQUEST_TIME
+                // и получаем дата из TimePickerFragment не равна нулю
+                && data.getSerializableExtra
+                ( TimePickerFragment.EXTRA_TIME ) != null) {
+//устанавливаем времы в значение получаемо из TimePickerFragment
+            Date date = (Date) data.getSerializableExtra
+                    ( TimePickerFragment.EXTRA_TIME );
+//устанвливаем время в объект Crime
+            mCrime.setTime( date );
+            //обновить время
+            updateTime();
+        }
 
-        if (requestCode == REQUEST_DATE) {
-            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-            mCrime.setDate(date);
+//если requestCode соответствует  REQUEST_DATE и дата получаемая из DatePickerFragment
+        //не равна нулю
+        if (requestCode == REQUEST_DATE &&
+                data.getSerializableExtra
+                        ( DatePickerFragment.EXTRA_DATE ) != null) {
+            //Устанвливаем дату полученую из DatePickerFragment
+            Date date = (Date) data.getSerializableExtra( DatePickerFragment.EXTRA_DATE );
+            //Создаем новую Calendar переменную в которую записываем инстенс
+            //получаемый из календаря
+            Calendar calendar = Calendar.getInstance();
+            //устанвливаем в календарь время
+            //из DatePickerFragment с переданным параметром date
+            calendar.setTime( date );
+            //устанвливаем в экземпляр оъекта Crime значение из calendar
+            mCrime.setDate( date );
             updateDate();
         } else if (requestCode == REQUEST_CONTACT && data != null) {
-            String contactLookupKey;
             Uri contactUri = data.getData();
-
-            // Specify which field you want your query to return values for
-            String[] queryFields = new String[] {
-                    ContactsContract.Contacts.LOOKUP_KEY,
+            //Определение полей, значение которыйх
+            //должно быть возвращены запросам
+            String[] queryFields = new String[]{
                     ContactsContract.Contacts.DISPLAY_NAME
             };
-
-            // Perform your query - the contactUri is like a "where" clause here
+            //Выполнение запроса - contactUri здесь выполняет функции
+            //условия "where" хде
             Cursor c = getActivity().getContentResolver()
-                    .query(contactUri, queryFields, null, null, null);
-
+                    .query( contactUri, queryFields, null, null, null );
             try {
-                // Double-check that you actually gor results
-                if (c.getCount() == 0) {
-                    return;
-                }
-
-                // pull out the data of the first row that is your ID and suspect's name
+                //проверка полученных результатов
                 c.moveToFirst();
-                int lookupColumn = c.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY);
-                int nameColumn = c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
-
-                contactLookupKey = c.getString(lookupColumn);
-                String suspect = c.getString(nameColumn);
-
-                mCrime.setSuspect(suspect);
-                mSuspectButton.setText(suspect);
+                String suspect = c.getString( 0 );
+                mCrime.setSuspect( suspect );
+                mSuspectButton.setText( suspect );
             } finally {
                 c.close();
             }
-
-			/*
-			 ** Now: find phone number
-			 */
 
             contactUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-            queryFields = new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER };
-
-            // Perform your query
-            c = getActivity().getContentResolver()
-                    .query(contactUri,
-                            queryFields,
-                            ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY + " = ? ",   // where clause
-                            new String[] { contactLookupKey },   // where clause args
-                            null);  // sort by
-
-            try {
-                // Double-check that you actually gor results
-                if (c.getCount() == 0) {
-                    return;
-                }
-
-                // pull out the data of the first row that is phone number
-                c.moveToFirst();
-                String phone = c.getString(0);
-
-                mCallButton.setEnabled(true);
-                mCrime.setContact(phone  );
-            } finally {
-                c.close();
-            }
-
+            queryFields = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+            c = getActivity().getContentResolver().query( contactUri,
+                    queryFields, ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY, null, null );
+            c.moveToFirst();
+            String phone = getString( 0 );
+            mCallButton.setEnabled( true );
+            mCrime.setContact( phone );
         }
+
+
     }
 
     //Метод обновления даты в заданном формате
@@ -391,10 +383,18 @@ public class CrimeFragment extends Fragment {
             suspect = getString( R.string.crime_report_suspect, suspect );
         }
 
+        // Попытка в ставить в отчет еще и номер телефона
+        String number = mCrime.getContact();
+        if (number == null) {
+            number = getString( R.string.call_null );
+        } else {
+            number = getString( R.string.call, number );
+        }
         //Создаем строковую переменную для создание отчета
         //в нее пишим значение crime_report из файла string
         //так же шапку отчета, дату , раскрыто или нет, преступник
-        String report = getString( R.string.crime_report, mCrime.getTitle(), dateString, solvedString, suspect );
+        String report = getString( R.string.crime_report,
+                mCrime.getTitle(), dateString, solvedString, suspect, number );
         //возвращаем отчет (строковое значение)
         return report;
     }
