@@ -233,8 +233,11 @@ public class CrimeFragment extends Fragment {
         mCallButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //создаем интент в котом вызываем звонилку Intent.ACTION_DIAL
+                // с параметрами полученными из Uri.parse( "tel:" + mCrime.getPhoneNumber())
                 Intent intent = new Intent( Intent.ACTION_DIAL,
                         Uri.parse( "tel:" + mCrime.getPhoneNumber()) );
+                //запускаем активити с подходящим под интент запросом
                 startActivity( intent );
             }
         } );
