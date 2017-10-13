@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,7 +24,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,6 +41,8 @@ public class CrimeFragment extends Fragment {
     private static final String DIALOG_TIME = "time";
     private static final int REQUEST_TIME = -1;
     private static final int REQUEST_CONTACT = 1;
+    private static final int REQUEST_PHOTO = 2;
+
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -47,6 +53,9 @@ public class CrimeFragment extends Fragment {
     private Button mReportButton;
     private Button mSuspectButton;
     private Button mCallButton;
+    private ImageButton mPhotoButton;
+    private ImageView mPhotoView;
+    private File mPhotoFile;
 
 
     //Прив вызове CrimeFragment вызывается CrimeFragment.newInstance
@@ -75,6 +84,8 @@ public class CrimeFragment extends Fragment {
         UUID crimeId = (UUID) getArguments().getSerializable( ARG_CRIME_ID );
         //mCrime записываем id элемента списка (помещаем в переменную объект списка)
         mCrime = CrimeLab.get( getActivity() ).getCrime( crimeId );
+        //mPhotoFile записываем местонахождение файла
+        mPhotoFile = CrimeLab.get( getActivity() ).getPhotoFile( mCrime );
     }
 
     //обновляем список mCrime
@@ -265,7 +276,27 @@ public class CrimeFragment extends Fragment {
                 PackageManager.MATCH_DEFAULT_ONLY ) == null) {
             mSuspectButton.setEnabled( false );
         }
+//Определяем кнопку фото
+        mPhotoButton = (ImageButton) v.findViewById( R.id.crime_camera );
+        //в Intent переменную capureImage пишем экшен  MediaStore.ACTION_IMAGE_CAPTURE
+        //поиск приложения на телефоне для деланья фото
+        final Intent capureImage = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
+//в болевое значение canTakePhoto пишем
+        boolean canTakePhoto = mPhotoFile != null &&
+                capureImage.resolveActivity( packageManager ) != null;
+        mPhotoButton.setEnabled( canTakePhoto );
+        if (canTakePhoto) {
+            Uri uri = Uri.fromFile( mPhotoFile );
+            capureImage.putExtra( MediaStore.EXTRA_OUTPUT, uri );
+        }
+        mPhotoButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult( capureImage,REQUEST_PHOTO );
+            }
+        } );
 
+        mPhotoView = (ImageView) v.findViewById( R.id.crime_photo );
 
         return v;
 

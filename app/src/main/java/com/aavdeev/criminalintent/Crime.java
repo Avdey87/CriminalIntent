@@ -14,6 +14,11 @@ public class Crime {
     private String mContact;
     private String mPhoneNumber;//переменная для хранения номера
 
+    //метод для получение имени файла фото
+    public String getPhotoFilename() {
+        //вернуть имя типа IMG_его айди записанное в строку + расширение jpg
+        return "IMG_" + getId().toString() + ".jpg";
+    }
     public String getPhoneNumber() {
         return mPhoneNumber;
     }

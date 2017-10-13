@@ -6,11 +6,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
 import com.aavdeev.criminalintent.database.CrimeBaseHelper;
 import com.aavdeev.criminalintent.database.CrimeCursorWrapper;
 import com.aavdeev.criminalintent.database.CrimeDbSchema;
 
+import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +36,7 @@ public class CrimeLab {
 
     }
 
-//метод для добавление элемента в таблицу
+    //метод для добавление элемента в таблицу
     public void addCrime(Crime c) {
         ContentValues values = getContentValues( c );
         mDatabase.insert( CrimeDbSchema.CrimeTable.NAME, null, values );
@@ -46,7 +49,7 @@ public class CrimeLab {
         return sCrimeLab;
     }
 
-//Удаление из базы данных
+    //Удаление из базы данных
     public void deleteCrime(Crime crime) {
         mDatabase.delete( CrimeDbSchema.CrimeTable.NAME,
                 CrimeDbSchema.CrimeTable.Cols.UUID + " = ?",
@@ -58,13 +61,13 @@ public class CrimeLab {
         List<Crime> crimes = new ArrayList<>();
 
         CrimeCursorWrapper cursor = queryCrimes( null, null );
-        try{
+        try {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 crimes.add( cursor.getCrime() );
                 cursor.moveToNext();
             }
-        }finally {
+        } finally {
             cursor.close();
         }
         return crimes;
@@ -77,22 +80,36 @@ public class CrimeLab {
                 CrimeDbSchema.CrimeTable.Cols.UUID + " = ?",
                 new String[]{id.toString()}
         );
-        try{
+        try {
             if (cursor.getCount() == 0) {
                 return null;
             }
             cursor.moveToFirst();
             return cursor.getCrime();
-        }finally {
+        } finally {
             cursor.close();
         }
 
     }
 
+    //метод возврощает местонахождение файла(фото)
+    public File getPhotoFile(Crime crime) {
+        //создаем File переменную в которую записываем местонахождеиен файла
+        File externalFilesDir = mContext
+                .getExternalFilesDir( Environment.DIRECTORY_PICTURES );
+        //если externalFilesDir пуста вернем null
+        if (externalFilesDir == null) {
+            return null;
+        }
+        //возвращаем путь к файлу и имя файла.
+        //имя файла получаем из crime.getPhotoFilename()
+        return new File( externalFilesDir, crime.getPhotoFilename() );
+    }
+
     // метод для записи данных в БД
     private static ContentValues getContentValues(Crime crime) {
         ContentValues values = new ContentValues();
-       //пишим UUID,  TITLE ......
+        //пишим UUID,  TITLE ......
         values.put( CrimeDbSchema.CrimeTable.Cols.UUID, crime.getId().toString() );
         values.put( CrimeDbSchema.CrimeTable.Cols.TITLE, crime.getTitle() );
         values.put( CrimeDbSchema.CrimeTable.Cols.DATE, crime.getDate().getTime() );
@@ -114,7 +131,7 @@ public class CrimeLab {
         return new CrimeCursorWrapper( cursor );
     }
 
-  //Метод добавление строк в БД
+    //Метод добавление строк в БД
     public void updateCrime(Crime crime) {
         //пишим в строковое занчение id добовлемой строки
         String uuidString = crime.getId().toString();
@@ -128,8 +145,6 @@ public class CrimeLab {
                 CrimeDbSchema.CrimeTable.Cols.UUID + " = ?",
                 new String[]{uuidString} );
     }
-
-
 
 
 }
