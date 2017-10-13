@@ -3,6 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
+
     <include layout="@layout/view_camera_and_title"/>
 
 
@@ -27,6 +28,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
 
+        <Button
+            android:id="@+id/crime_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
         <CheckBox
             android:id="@+id/crime_solved"
             android:layout_width="wrap_content"
@@ -36,6 +43,7 @@
 
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,7 +55,7 @@
             android:id="@+id/crime_suspect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-           android:layout_weight="1"
+            android:layout_weight="1"
             android:text="@string/crime_suspect_text"/>
 
         <Button
@@ -56,6 +64,29 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/crime_report_text"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/crime_call"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/call"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/delete_crime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+             android:text="@string/delete_crime"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 
