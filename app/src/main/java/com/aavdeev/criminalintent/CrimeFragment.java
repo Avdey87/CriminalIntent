@@ -13,11 +13,12 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.ShareCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
@@ -239,7 +239,6 @@ public class CrimeFragment extends Fragment {
         final Intent pickContact = new Intent( Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI );
 
-      
 
         mCallButton = (Button) v.findViewById( R.id.crime_call );
         mCallButton.setOnClickListener( new View.OnClickListener() {
@@ -248,7 +247,7 @@ public class CrimeFragment extends Fragment {
                 //создаем интент в котом вызываем звонилку Intent.ACTION_DIAL
                 // с параметрами полученными из Uri.parse( "tel:" + mCrime.getPhoneNumber())
                 Intent intent = new Intent( Intent.ACTION_DIAL,
-                        Uri.parse( "tel:" + mCrime.getPhoneNumber()) );
+                        Uri.parse( "tel:" + mCrime.getPhoneNumber() ) );
                 //запускаем активити с подходящим под интент запросом
                 startActivity( intent );
             }
@@ -293,7 +292,7 @@ public class CrimeFragment extends Fragment {
         mPhotoButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult( capureImage,REQUEST_PHOTO );
+                startActivityForResult( capureImage, REQUEST_PHOTO );
             }
         } );
 
@@ -378,6 +377,33 @@ public class CrimeFragment extends Fragment {
             updatePhotoView();
         }
 
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_crime_menu:
+                //получаем id текущего crime и удаляем его
+                if (mCrime == null) {
+                    CrimeLab.get( getActivity() ).deleteCrime( mCrime );
+                    //закрываем активити, переходим к главному.
+                    getActivity().finish();
+                }
+                return true;
+            default:
+                //вернуть меню родительского класса
+                return super.onOptionsItemSelected( item );
+        }
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu( menu, inflater );
+        inflater.inflate( R.menu.fragment_crime_menu, menu );
+
+        MenuItem subtitleItem = menu.findItem( R.id.delete_crime_menu );
 
     }
 
