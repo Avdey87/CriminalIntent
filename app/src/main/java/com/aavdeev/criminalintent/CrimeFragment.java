@@ -82,6 +82,7 @@ public class CrimeFragment extends Fragment {
         super.onCreate( savedInstanceState );
         //в переменную записываем индетификатор полученный
         // из константы ARG_CRIME_ID
+        setHasOptionsMenu( true );
         UUID crimeId = (UUID) getArguments().getSerializable( ARG_CRIME_ID );
         //mCrime записываем id элемента списка (помещаем в переменную объект списка)
         mCrime = CrimeLab.get( getActivity() ).getCrime( crimeId );
@@ -384,12 +385,9 @@ public class CrimeFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_crime_menu:
-                //получаем id текущего crime и удаляем его
-                if (mCrime == null) {
-                    CrimeLab.get( getActivity() ).deleteCrime( mCrime );
-                    //закрываем активити, переходим к главному.
+                CrimeLab.get( getActivity() ).deleteCrime( mCrime );
                     getActivity().finish();
-                }
+
                 return true;
             default:
                 //вернуть меню родительского класса

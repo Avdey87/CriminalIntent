@@ -103,6 +103,46 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
+    //переопределяем метод выбраное меню
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //в цикл switch переадем id выбрана item (item.getItemId())
+        switch (item.getItemId()) {
+            //если Id совпадает с menu_item_new_crime
+            case R.id.menu_item_new_crime:
+                //Создаем новый экземпляр Crime
+                Crime crime = new Crime();
+                //у CrimeLab вызываем метод get(пробегает по всему списку
+                // и возвращает id объекта в списке) псоле чего вызываем
+                //addCrime для добавление экземпляра crime в коенц списка
+                CrimeLab.get( getActivity() ).addCrime( crime );
+                //Создаем Intent записываем а него интент с параметрами
+                //getActivity получить активити(найти нужную ативити)
+                //с id полученым из экземпляр класса Crime метода getId
+                Intent intent = CrimePagerActivity
+                        .newIntent( getActivity(), crime.getId() );
+                //Запустить активите с усатановлеными параметрами intent
+                startActivity( intent );
+                //вернуть true , то есть отбразить ативити
+                return true;
+            //при нажатии на menu_item_show_subtitle
+            case R.id.menu_item_show_subtitle:
+                //если пременная mSubtitleVisible изменилась
+                mSubtitleVisible = !mSubtitleVisible;
+                //тогда отменить действие меню
+                //отмена действия меню invalidateOptionsMenu();
+                getActivity().invalidateOptionsMenu();
+                //вызываем метод updateSubtitle (количество объектов в списке)
+                updateSubtitle();
+                //возвращаем тру для отображания
+                return true;
+            //если не найден id в case-ах выполняем
+            default:
+                //вернуть меню родительского класса
+                return super.onOptionsItemSelected( item );
+        }
+    }
+
     //метод для получение количества экземпляров Crime в списке
     private void updateSubtitle() {
         //Создаем экземпляр CrimeLab и присваеваем ему значение
@@ -271,43 +311,5 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
-    //переопределяем метод выбраное меню
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        //в цикл switch переадем id выбрана item (item.getItemId())
-        switch (item.getItemId()) {
-            //если Id совпадает с menu_item_new_crime
-            case R.id.menu_item_new_crime:
-                //Создаем новый экземпляр Crime
-                Crime crime = new Crime();
-                //у CrimeLab вызываем метод get(пробегает по всему списку
-                // и возвращает id объекта в списке) псоле чего вызываем
-                //addCrime для добавление экземпляра crime в коенц списка
-                CrimeLab.get( getActivity() ).addCrime( crime );
-                //Создаем Intent записываем а него интент с параметрами
-                //getActivity получить активити(найти нужную ативити)
-                //с id полученым из экземпляр класса Crime метода getId
-                Intent intent = CrimePagerActivity
-                        .newIntent( getActivity(), crime.getId() );
-                //Запустить активите с усатановлеными параметрами intent
-                startActivity( intent );
-                //вернуть true , то есть отбразить ативити
-                return true;
-            //при нажатии на menu_item_show_subtitle
-            case R.id.menu_item_show_subtitle:
-                //если пременная mSubtitleVisible изменилась
-                mSubtitleVisible = !mSubtitleVisible;
-                //тогда отменить действие меню
-                //отмена действия меню invalidateOptionsMenu();
-                getActivity().invalidateOptionsMenu();
-                //вызываем метод updateSubtitle (количество объектов в списке)
-                updateSubtitle();
-                //возвращаем тру для отображания
-                return true;
-            //если не найден id в case-ах выполняем
-            default:
-                //вернуть меню родительского класса
-                return super.onOptionsItemSelected( item );
-        }
-    }
+
 }
