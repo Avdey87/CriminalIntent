@@ -19,7 +19,7 @@ public class PictureUtils {
             if (srcWidth > srcHeight) {
                 inSampleSize = Math.round( srcHeight / destHeight );
             } else {
-                inSampleSize=Math.round( srcWidth/destWidth )
+                inSampleSize = Math.round( srcWidth / destWidth );
             }
         }
 
