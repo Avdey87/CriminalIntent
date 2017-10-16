@@ -12,6 +12,15 @@ public class Crime {
     private String mSuspect;//переменная для хранения имени подозреваемого
     private Date time;
     private String mContact;
+    private String mPhoneNumber;
+
+    public String getPhoneNumber() {
+        return mPhoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        mPhoneNumber = phoneNumber;
+    }
 
     public String getContact() {
         return mContact;

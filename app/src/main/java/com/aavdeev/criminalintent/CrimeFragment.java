@@ -227,18 +227,6 @@ public class CrimeFragment extends Fragment {
         final Intent pickContact = new Intent( Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI );
 
-        final Intent pickContactCall = new Intent( Intent.ACTION_CALL,
-                Uri.parse( ContactsContract.Contacts.LOOKUP_KEY ) );
-
-        mCallButton = (Button) v.findViewById( R.id.crime_call );
-        mCallButton.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                startActivityForResult( pickContactCall, REQUEST_CONTACT );
-            }
-        } );
-
 
         //определяем кнопку
         mSuspectButton = (Button) v.findViewById( R.id.crime_suspect );
@@ -262,6 +250,20 @@ public class CrimeFragment extends Fragment {
                 PackageManager.MATCH_DEFAULT_ONLY ) == null) {
             mSuspectButton.setEnabled( false );
         }
+
+        final Intent pickContactCall = new Intent( Intent.ACTION_CALL,
+                Uri.parse( ContactsContract.Contacts.LOOKUP_KEY ) );
+
+        mCallButton = (Button) v.findViewById( R.id.crime_call );
+        mCallButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mCrime.getPhoneNumber()));
+                startActivity(intent);
+
+                /*startActivityForResult( pickContactCall, REQUEST_CONTACT );*/
+            }
+        } );
 
 
         return v;

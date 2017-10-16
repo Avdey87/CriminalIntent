@@ -22,7 +22,7 @@ public class CrimeCursorWrapper extends CursorWrapper {
         long date = getLong( getColumnIndex( CrimeDbSchema.CrimeTable.Cols.DATE ) );
         int isSolved = getInt( getColumnIndex( CrimeDbSchema.CrimeTable.Cols.SOLVED ) );
         String suspect = getString( getColumnIndex( CrimeDbSchema.CrimeTable.Cols.SUSPECT ) );
-        String contact = getString( getColumnIndex( ContactsContract.CommonDataKinds.Phone._ID ) );
+        String contact = getString( getColumnIndex( CrimeDbSchema.CrimeTable.Cols.CONTACT ) );
         //Создаем экземпляр  Crime
         Crime crime = new Crime( UUID.fromString( uuidString ) );
         //Устанавливаем полученные значения в crime
