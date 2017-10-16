@@ -18,18 +18,21 @@ public class Crime {
     }
 
     public Crime() {
-        this( UUID.randomUUID() );
+        this(UUID.randomUUID());
     }
+
     public Crime(UUID id) {
         //Генерируеем уникальный индефикатор
         mId = id;
         mDate = new Date();
     }
-//пполучить имя подозреваемого
+
+    //пполучить имя подозреваемого
     public String getSuspect() {
         return mSuspect;
     }
-//установить имя подозреваемого
+
+    //установить имя подозреваемого
     public void setSuspect(String suspect) {
         mSuspect = suspect;
     }
