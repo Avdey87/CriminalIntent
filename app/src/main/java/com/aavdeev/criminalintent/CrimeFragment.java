@@ -327,7 +327,7 @@ public class CrimeFragment extends Fragment {
                 //проверка полученных результатов
                 c.moveToFirst();
                 String suspect = c.getString( 0 );
-                mCrime.getSuspect();
+                mCrime.setSuspect(suspect);
                 mSuspectButton.setText( suspect );
             } finally {
                 c.close();
