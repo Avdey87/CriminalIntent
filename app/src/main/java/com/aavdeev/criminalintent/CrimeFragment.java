@@ -16,6 +16,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +77,7 @@ public class CrimeFragment extends Fragment {
         UUID crimeId = (UUID) getArguments().getSerializable( ARG_CRIME_ID );
         //mCrime записываем id элемента списка (помещаем в переменную объект списка)
         mCrime = CrimeLab.get( getActivity() ).getCrime( crimeId );
+        setHasOptionsMenu( true );
     }
 
     //обновляем список mCrime
@@ -83,6 +86,13 @@ public class CrimeFragment extends Fragment {
         super.onPause();
 
         CrimeLab.get( getActivity() ).updateCrime( mCrime );
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu( menu, inflater );
+        inflater.inflate( R.menu.fragment_crime_menu, menu );
     }
 
     @Nullable
@@ -94,6 +104,7 @@ public class CrimeFragment extends Fragment {
         //Container определяет родительское представления
         // false указывает нужно ли включать заполненое представление в родителя
         View v = inflater.inflate( R.layout.fragment_crime, container, false );
+
 
         //Настройка реакции виджета EditText на ввод пользователя
         mTitleField = (EditText) v.findViewById( R.id.crime_title );
