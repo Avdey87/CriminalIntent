@@ -5,20 +5,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ShareCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +23,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
@@ -42,8 +37,6 @@ public class CrimeFragment extends Fragment {
     private static final String DIALOG_TIME = "time";
     private static final int REQUEST_TIME = -1;
     private static final int REQUEST_CONTACT = 1;
-    private static final int REQUEST_PHOTO = 2;
-
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -54,9 +47,6 @@ public class CrimeFragment extends Fragment {
     private Button mReportButton;
     private Button mSuspectButton;
     private Button mCallButton;
-    private ImageButton mPhotoButton;
-    private ImageView mPhotoView;
-    private File mPhotoFile;
 
 
     //Прив вызове CrimeFragment вызывается CrimeFragment.newInstance
@@ -82,12 +72,9 @@ public class CrimeFragment extends Fragment {
         super.onCreate( savedInstanceState );
         //в переменную записываем индетификатор полученный
         // из константы ARG_CRIME_ID
-        setHasOptionsMenu( true );
         UUID crimeId = (UUID) getArguments().getSerializable( ARG_CRIME_ID );
         //mCrime записываем id элемента списка (помещаем в переменную объект списка)
         mCrime = CrimeLab.get( getActivity() ).getCrime( crimeId );
-        //mPhotoFile записываем местонахождение файла
-        mPhotoFile = CrimeLab.get( getActivity() ).getPhotoFile( mCrime );
     }
 
     //обновляем список mCrime
@@ -241,20 +228,6 @@ public class CrimeFragment extends Fragment {
                 ContactsContract.Contacts.CONTENT_URI );
 
 
-        mCallButton = (Button) v.findViewById( R.id.crime_call );
-        mCallButton.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //создаем интент в котом вызываем звонилку Intent.ACTION_DIAL
-                // с параметрами полученными из Uri.parse( "tel:" + mCrime.getPhoneNumber())
-                Intent intent = new Intent( Intent.ACTION_DIAL,
-                        Uri.parse( "tel:" + mCrime.getPhoneNumber() ) );
-                //запускаем активити с подходящим под интент запросом
-                startActivity( intent );
-            }
-        } );
-
-
         //определяем кнопку
         mSuspectButton = (Button) v.findViewById( R.id.crime_suspect );
         //устанавливаем слушаетель на кнопку
@@ -277,28 +250,22 @@ public class CrimeFragment extends Fragment {
                 PackageManager.MATCH_DEFAULT_ONLY ) == null) {
             mSuspectButton.setEnabled( false );
         }
-//Определяем кнопку фото
-        mPhotoButton = (ImageButton) v.findViewById( R.id.crime_camera );
-        //в Intent переменную capureImage пишем экшен  MediaStore.ACTION_IMAGE_CAPTURE
-        //поиск приложения на телефоне для деланья фото
-        final Intent capureImage = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
-//в болевое значение canTakePhoto пишем
-        boolean canTakePhoto = mPhotoFile != null &&
-                capureImage.resolveActivity( packageManager ) != null;
-        mPhotoButton.setEnabled( canTakePhoto );
-        if (canTakePhoto) {
-            Uri uri = Uri.fromFile( mPhotoFile );
-            capureImage.putExtra( MediaStore.EXTRA_OUTPUT, uri );
-        }
-        mPhotoButton.setOnClickListener( new View.OnClickListener() {
+
+        final Intent pickContactCall = new Intent( Intent.ACTION_CALL,
+                Uri.parse( ContactsContract.Contacts.LOOKUP_KEY ) );
+
+        mCallButton = (Button) v.findViewById( R.id.crime_call );
+        mCallButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult( capureImage, REQUEST_PHOTO );
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mCrime.getPhoneNumber()));
+                startActivity(intent);
+
+                /*startActivityForResult( pickContactCall, REQUEST_CONTACT );*/
             }
         } );
 
-        mPhotoView = (ImageView) v.findViewById( R.id.crime_photo );
-        updatePhotoView();
+
         return v;
 
     }
@@ -360,49 +327,12 @@ public class CrimeFragment extends Fragment {
                 //проверка полученных результатов
                 c.moveToFirst();
                 String suspect = c.getString( 0 );
-                mCrime.setSuspect( suspect );
+                mCrime.getSuspect();
                 mSuspectButton.setText( suspect );
             } finally {
                 c.close();
             }
-
-            contactUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-            queryFields = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-            c = getActivity().getContentResolver().query( contactUri,
-                    queryFields, ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY, null, null );
-            c.moveToFirst();
-            String phone = getString( 0 );
-            mCallButton.setEnabled( true );
-            mCrime.setContact( phone );
-        } else if (requestCode == REQUEST_PHOTO) {
-            updatePhotoView();
         }
-
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.delete_crime_menu:
-                CrimeLab.get( getActivity() ).deleteCrime( mCrime );
-                    getActivity().finish();
-
-                return true;
-            default:
-                //вернуть меню родительского класса
-                return super.onOptionsItemSelected( item );
-        }
-
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu( menu, inflater );
-        inflater.inflate( R.menu.fragment_crime_menu, menu );
-
-        MenuItem subtitleItem = menu.findItem( R.id.delete_crime_menu );
-
     }
 
     //Метод обновления даты в заданном формате
@@ -445,32 +375,12 @@ public class CrimeFragment extends Fragment {
             suspect = getString( R.string.crime_report_suspect, suspect );
         }
 
-        // Попытка в ставить в отчет еще и номер телефона
-        String number = mCrime.getContact();
-        if (number == null) {
-            number = getString( R.string.call_null );
-        } else {
-            number = getString( R.string.call, number );
-        }
         //Создаем строковую переменную для создание отчета
         //в нее пишим значение crime_report из файла string
         //так же шапку отчета, дату , раскрыто или нет, преступник
-        String report = getString( R.string.crime_report,
-                mCrime.getTitle(), dateString, solvedString, suspect, number );
+        String report = getString( R.string.crime_report, mCrime.getTitle(), dateString, solvedString, suspect );
         //возвращаем отчет (строковое значение)
         return report;
-    }
-
-    //Метод обновления фото
-    private void updatePhotoView() {
-        if (mPhotoFile == null || !mPhotoFile.exists()) {
-            mPhotoView.setImageDrawable( null );
-        } else {
-            Bitmap bitmap = PictureUtils.getScaledBitmap(
-                    mPhotoFile.getPath(), getActivity()
-            );
-            mPhotoView.setImageBitmap( bitmap );
-        }
     }
 
     //Метод обновления времени

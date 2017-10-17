@@ -12,18 +12,13 @@ public class Crime {
     private String mSuspect;//переменная для хранения имени подозреваемого
     private Date time;
     private String mContact;
-    private String mPhoneNumber;//переменная для хранения номера
+    private String mPhoneNumber;
 
-    //метод для получение имени файла фото
-    public String getPhotoFilename() {
-        //вернуть имя типа IMG_его айди записанное в строку + расширение jpg
-        return "IMG_" + getId().toString() + ".jpg";
-    }
     public String getPhoneNumber() {
         return mPhoneNumber;
     }
 
-    public void setmPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         mPhoneNumber = phoneNumber;
     }
 
@@ -32,18 +27,21 @@ public class Crime {
     }
 
     public Crime() {
-        this( UUID.randomUUID() );
+        this(UUID.randomUUID());
     }
+
     public Crime(UUID id) {
         //Генерируеем уникальный индефикатор
         mId = id;
         mDate = new Date();
     }
-//пполучить имя подозреваемого
+
+    //пполучить имя подозреваемого
     public String getSuspect() {
         return mSuspect;
     }
-//установить имя подозреваемого
+
+    //установить имя подозреваемого
     public void setSuspect(String suspect) {
         mSuspect = suspect;
     }
