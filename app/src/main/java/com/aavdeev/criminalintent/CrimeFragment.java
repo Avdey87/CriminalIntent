@@ -301,7 +301,7 @@ public class CrimeFragment extends Fragment {
             }
         } );
         mPhotoView = (ImageView) v.findViewById( R.id.crime_photo );
-
+updatePhotoView();
         return v;
 
     }
@@ -368,6 +368,10 @@ public class CrimeFragment extends Fragment {
             } finally {
                 c.close();
             }
+
+        }
+        else if (requestCode == REQUEST_PHOTO) {
+            updatePhotoView();
         }
     }
 
