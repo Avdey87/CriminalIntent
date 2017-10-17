@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
               android:orientation="vertical">
 
 
@@ -10,35 +10,52 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        >
+        android:stretchColumns="3">
+
+        <TableRow>
+
+            <LinearLayout
+                android:orientation="vertical">
+
+                <include
+                    layout="@layout/view_camera_and_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/crime_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+
+                <Button
+                    android:id="@+id/crime_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
 
 
-        <include
-            layout="@layout/view_camera_and_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            </LinearLayout>
+            <LinearLayout android:orientation="vertical">
+                <CheckBox
+                    android:id="@+id/crime_solved"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/crime_solved_label"/>
+            </LinearLayout>
 
-        <!--<Button
-            android:id="@+id/crime_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>-->
 
-        <CheckBox
-            android:id="@+id/crime_solved"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/crime_solved_label"/>
+        </TableRow>
 
-        <Button
-            android:id="@+id/crime_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+        <TableRow>
+
+        </TableRow>
 
     </TableLayout>
+
 
 
 
@@ -87,12 +104,6 @@
             android:layout_weight="1"
             android:text="@string/call"/>
 
-        <Button
-            android:id="@+id/delete_crime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/delete_crime"/>
 
     </LinearLayout>
 

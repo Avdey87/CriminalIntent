@@ -43,7 +43,6 @@ public class CrimeFragment extends Fragment {
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
-    private Button mDeleteButtom;
     private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
     private Button mReportButton;
@@ -89,17 +88,22 @@ public class CrimeFragment extends Fragment {
     }
 
 
+    //добавляем меню удалить в CrimeFragment (2 активити)
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu( menu, inflater );
         inflater.inflate( R.menu.fragment_crime_menu, menu );
     }
 
+    //обработка нажатие на кнопку удалить в меню CrimeFragment(2 активити)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_crime_menu:
+                //Получаем идетификатор активити (инидетификатор crime -запись в списке)
+                //и удаляем запись в списке
                 CrimeLab.get( getActivity() ).deleteCrime( mCrime );
+                //завершаем текущую активити
                 getActivity().finish();
             default:
                 return super.onOptionsItemSelected( item );
@@ -194,19 +198,7 @@ public class CrimeFragment extends Fragment {
             }
         } );
 
-       /* mDeleteButtom = (Button) v.findViewById( R.id.delete_crime );
 
-        mDeleteButtom.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //получаем id текущего crime и удаляем его
-                CrimeLab.get( getActivity() ).deleteCrime( mCrime );
-                //закрываем активити, переходим к главному.
-                getActivity().finish();
-
-
-            }
-        } );*/
         //Получаем ссылку на галочку
         mSolvedCheckBox = (CheckBox) v.findViewById( R.id.crime_solved );
         //выводим состояние чек бокса
@@ -280,8 +272,8 @@ public class CrimeFragment extends Fragment {
         mCallButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mCrime.getPhoneNumber()));
-                startActivity(intent);
+                Intent intent = new Intent( Intent.ACTION_DIAL, Uri.parse( "tel:" + mCrime.getPhoneNumber() ) );
+                startActivity( intent );
 
                 /*startActivityForResult( pickContactCall, REQUEST_CONTACT );*/
             }
@@ -349,7 +341,7 @@ public class CrimeFragment extends Fragment {
                 //проверка полученных результатов
                 c.moveToFirst();
                 String suspect = c.getString( 0 );
-                mCrime.setSuspect(suspect);
+                mCrime.setSuspect( suspect );
                 mSuspectButton.setText( suspect );
             } finally {
                 c.close();
