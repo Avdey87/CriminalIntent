@@ -95,6 +95,17 @@ public class CrimeFragment extends Fragment {
         inflater.inflate( R.menu.fragment_crime_menu, menu );
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_crime_menu:
+                CrimeLab.get( getActivity() ).deleteCrime( mCrime );
+                getActivity().finish();
+            default:
+                return super.onOptionsItemSelected( item );
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -183,7 +194,7 @@ public class CrimeFragment extends Fragment {
             }
         } );
 
-        mDeleteButtom = (Button) v.findViewById( R.id.delete_crime );
+       /* mDeleteButtom = (Button) v.findViewById( R.id.delete_crime );
 
         mDeleteButtom.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -195,7 +206,7 @@ public class CrimeFragment extends Fragment {
 
 
             }
-        } );
+        } );*/
         //Получаем ссылку на галочку
         mSolvedCheckBox = (CheckBox) v.findViewById( R.id.crime_solved );
         //выводим состояние чек бокса
