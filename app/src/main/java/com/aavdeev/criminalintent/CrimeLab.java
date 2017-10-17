@@ -6,11 +6,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
 import com.aavdeev.criminalintent.database.CrimeBaseHelper;
 import com.aavdeev.criminalintent.database.CrimeCursorWrapper;
 import com.aavdeev.criminalintent.database.CrimeDbSchema;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +23,7 @@ public class CrimeLab {
 
     private Context mContext;
     private SQLiteDatabase mDatabase;
+
 
 
     //Конструктор для создания БД
@@ -87,6 +90,15 @@ public class CrimeLab {
             cursor.close();
         }
 
+    }
+
+    public File getPhotoFile(Crime crime) {
+        File externalFileDir = mContext
+                .getExternalFilesDir( Environment.DIRECTORY_PICTURES );
+        if (externalFileDir == null) {
+            return null;
+        }
+        return new File( externalFileDir, crime.getPhotoFilename() );
     }
 
     // метод для записи данных в БД

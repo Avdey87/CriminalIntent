@@ -41,6 +41,10 @@ public class Crime {
         return mSuspect;
     }
 
+    public String getPhotoFilename() {
+        return "IMG_" + getId().toString() + ".jpg";
+    }
+
     //установить имя подозреваемого
     public void setSuspect(String suspect) {
         mSuspect = suspect;
