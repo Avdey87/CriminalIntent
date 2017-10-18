@@ -456,7 +456,8 @@ public class CrimeFragment extends Fragment {
         mTimeButton.setText( tf.format( mCrime.getDate() ) );
 
     }
-//Метод обновление фото
+
+    //Метод обновление фото
     private void updatePhotoView() {
 //Если фото файл не существует
         if (mPhotoFile == null || !mPhotoFile.exists()) {

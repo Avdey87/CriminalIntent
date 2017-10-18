@@ -24,7 +24,6 @@ import java.util.List;
 public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecycleView;
     private CrimeAdapter mAdapter;
-    private Crime mCrime;
     private boolean mSubtitleVisible;
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
     //создаем переменную типа int и присваемваем ей отрицательное значение
