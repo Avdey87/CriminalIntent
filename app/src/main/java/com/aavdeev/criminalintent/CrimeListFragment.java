@@ -1,12 +1,13 @@
 package com.aavdeev.criminalintent;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -25,6 +25,25 @@ public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecycleView;
     private CrimeAdapter mAdapter;
     private boolean mSubtitleVisible;
+    private Callbacks mCallbacks;
+
+    //интерфейс для активности хоста
+    public interface Callbacks {
+        void onCrimeSelected(Crime crime);
+    }
+//метод вызывается при присоединения фрагмента к активности
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach( context );
+        mCallbacks = (Callbacks) context;
+    }
+//пременной присваетвается null так как в дальнейшем мы не сможем к ней обратиться
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
     //создаем переменную типа int и присваемваем ей отрицательное значение
     //отрицательное значение будет означать что изменений не было внесено
