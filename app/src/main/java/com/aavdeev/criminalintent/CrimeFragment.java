@@ -45,6 +45,7 @@ public class CrimeFragment extends Fragment {
     private static final int REQUEST_TIME = -1;
     private static final int REQUEST_CONTACT = 1;
     private static final int REQUEST_PHOTO = 2;
+    private static final String DIALOG_PHOTO = "DialogPhoto";
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -305,7 +306,27 @@ public class CrimeFragment extends Fragment {
                 startActivityForResult( captureImage, REQUEST_PHOTO );
             }
         } );
+        //Определяем mPhotoView
         mPhotoView = (ImageView) v.findViewById( R.id.crime_photo );
+        //устанвливаем слушаетля на mPhotoView
+        mPhotoView.setOnClickListener( new View.OnClickListener() {
+            //действие при кликанье на фото
+            @Override
+            public void onClick(View v) {
+                //создаем FragmentManager переменную в которую записываем
+                //данные вызываемого фрагмента
+                FragmentManager fm = getFragmentManager();
+                //создаем экземпляр CrimePhotoDialogFragment, записываем внего
+                //значение хранящееся в newInstance для mPhotoFile(путь к фото
+                // сделанной на камеру)
+                CrimePhotoDialogFragment dialog = CrimePhotoDialogFragment
+                        .newInstance( mPhotoFile );
+                //команда на отображение диалога, передаем в show 2 параметра
+                //fm данные фрагмента для отображение и занчен константы для фото
+                dialog.show( fm, DIALOG_PHOTO );
+            }
+        } );
+//обновляем отображение фото
         updatePhotoView();
         return v;
 
@@ -435,14 +456,21 @@ public class CrimeFragment extends Fragment {
         mTimeButton.setText( tf.format( mCrime.getDate() ) );
 
     }
-
+//Метод обновление фото
     private void updatePhotoView() {
+//Если фото файл не существует
         if (mPhotoFile == null || !mPhotoFile.exists()) {
+            //установливаем пустое значение в отображение фото
             mPhotoView.setImageDrawable( null );
+            //иначе
         } else {
+            //создаем Bitmap переменую в которую помещаем
+            //путь к фото сделаной на камеру
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity()
             );
+            //устанвливаем в mPhotoView (отображение фото)
+            //значение вщятое из bitmap
             mPhotoView.setImageBitmap( bitmap );
         }
     }
