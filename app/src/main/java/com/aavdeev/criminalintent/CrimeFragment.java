@@ -294,14 +294,19 @@ public class CrimeFragment extends Fragment {
                 ( MediaStore.ACTION_IMAGE_CAPTURE );
         boolean canTakePhoto = mPhotoFile != null &&
                 captureImage.resolveActivity( packageManager ) != null;
+        mPhotoButton.setEnabled( true );
+        if (canTakePhoto) {
+            Uri uri = Uri.fromFile( mPhotoFile );
+            captureImage.putExtra( MediaStore.EXTRA_OUTPUT, uri );
+        }
         mPhotoButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(captureImage,REQUEST_PHOTO  );
+                startActivityForResult( captureImage, REQUEST_PHOTO );
             }
         } );
         mPhotoView = (ImageView) v.findViewById( R.id.crime_photo );
-updatePhotoView();
+        updatePhotoView();
         return v;
 
     }
@@ -369,8 +374,7 @@ updatePhotoView();
                 c.close();
             }
 
-        }
-        else if (requestCode == REQUEST_PHOTO) {
+        } else if (requestCode == REQUEST_PHOTO) {
             updatePhotoView();
         }
     }
