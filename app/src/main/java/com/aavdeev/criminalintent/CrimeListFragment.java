@@ -225,13 +225,15 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-//создаем новый Intent которуму присваем класс CrimePagerActivity
+            mCallbacks.onCrimeSelected( mCrime );
+
+/*/*//*//*создаем новый Intent которуму присваем класс CrimePagerActivity
             //и передаем в качестве параметра индетификатор mCrime (элемент списка)
             Intent intent = CrimePagerActivity.newIntent( getActivity(), mCrime.getId() );
             //перепменной lastUpdatePosition присваем текущее состояние
             //объекта списка
             lastUpdatePosition = this.getAdapterPosition();
-            startActivity( intent );
+            startActivity( intent );*/
         }
     }
 
@@ -305,10 +307,8 @@ public class CrimeListFragment extends Fragment {
                 //Создаем Intent записываем а него интент с параметрами
                 //getActivity получить активити(найти нужную ативити)
                 //с id полученым из экземпляр класса Crime метода getId
-                Intent intent = CrimePagerActivity
-                        .newIntent( getActivity(), crime.getId() );
-                //Запустить активите с усатановлеными параметрами intent
-                startActivity( intent );
+                updateUI();
+                mCallbacks.onCrimeSelected( crime );
                 //вернуть true , то есть отбразить ативити
                 return true;
             //при нажатии на menu_item_show_subtitle
