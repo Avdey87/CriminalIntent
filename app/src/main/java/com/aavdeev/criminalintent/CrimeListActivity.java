@@ -3,7 +3,7 @@ package com.aavdeev.criminalintent;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-public class CrimeListActivity extends SingleFragmentActivity implements CrimeListFragment.Callbacks {
+public class CrimeListActivity extends SingleFragmentActivity implements CrimeListFragment.Callbacks, CrimeFragment.Callbacks {
     @Override
     protected Fragment createFragment() {
         return new CrimeListFragment();
@@ -37,4 +37,12 @@ public class CrimeListActivity extends SingleFragmentActivity implements CrimeLi
 
     }
 
+    @Override
+    public void onCrimeUpdate(Crime crime) {
+        CrimeListFragment listFragment = (CrimeListFragment)
+                getSupportFragmentManager()
+                        .findFragmentById( R.id.fragment_container );
+        listFragment.updateUI();
+
+    }
 }

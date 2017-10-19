@@ -2,6 +2,7 @@ package com.aavdeev.criminalintent;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -58,6 +59,15 @@ public class CrimeFragment extends Fragment {
     private Button mCallButton;
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
+    private Callbacks mCallbacks;
+
+
+    //необходимый интерфейсы для активности хоста
+    public interface Callbacks {
+        void onCrimeUpdate(Crime crime);
+    }
+
+
 
 
     //Прив вызове CrimeFragment вызывается CrimeFragment.newInstance
@@ -76,6 +86,13 @@ public class CrimeFragment extends Fragment {
         //возвращаем экземпляр класса CrimeFragment
         return fragment;
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach( context );
+        mCallbacks = (Callbacks) context;
+    }
+
 
 
     @Override
@@ -98,6 +115,11 @@ public class CrimeFragment extends Fragment {
         CrimeLab.get( getActivity() ).updateCrime( mCrime );
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
 
     //добавляем меню удалить в CrimeFragment (2 активити)
     @Override
@@ -149,6 +171,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence c, int start, int before, int count) {
                 mCrime.setTitle( c.toString() );
+                updateCrime();
             }
 
             @Override
@@ -221,6 +244,7 @@ public class CrimeFragment extends Fragment {
                 //назначение флага
                 //Объекту Crime,mCrime, устанавливаем значение isChecked
                 mCrime.setSolved( isChecked );
+                updateCrime();
             }
         } );
 //определяем кнопку
@@ -354,6 +378,7 @@ public class CrimeFragment extends Fragment {
                     ( TimePickerFragment.EXTRA_TIME );
 //устанвливаем время в объект Crime
             mCrime.setTime( date );
+            updateCrime();
             //обновить время
             updateTime();
         }
@@ -373,6 +398,7 @@ public class CrimeFragment extends Fragment {
             calendar.setTime( date );
             //устанвливаем в экземпляр оъекта Crime значение из calendar
             mCrime.setDate( date );
+            updateCrime();
             updateDate();
         } else if (requestCode == REQUEST_CONTACT && data != null) {
             Uri contactUri = data.getData();
@@ -390,14 +416,21 @@ public class CrimeFragment extends Fragment {
                 c.moveToFirst();
                 String suspect = c.getString( 0 );
                 mCrime.setSuspect( suspect );
+                updateCrime();
                 mSuspectButton.setText( suspect );
             } finally {
                 c.close();
             }
 
         } else if (requestCode == REQUEST_PHOTO) {
+            updateCrime();
             updatePhotoView();
         }
+    }
+
+    private void updateCrime() {
+        CrimeLab.get( getActivity() ).updateCrime( mCrime );
+        mCallbacks.onCrimeUpdate( mCrime );
     }
 
     //Метод обновления даты в заданном формате

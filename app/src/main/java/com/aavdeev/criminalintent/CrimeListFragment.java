@@ -145,7 +145,7 @@ public class CrimeListFragment extends Fragment {
         activity.getSupportActionBar().setSubtitle( subtitle );
     }
 
-    private void updateUI() {
+    public void updateUI() {
         //Создаем объект типа CrimeLab
         //записываем в него новую активити
         CrimeLab crimeLab = CrimeLab.get( getActivity() );
