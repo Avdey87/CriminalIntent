@@ -423,6 +423,7 @@ public class CrimeFragment extends Fragment {
             }
 
         } else if (requestCode == REQUEST_PHOTO) {
+            //обновляем список преступлений
             updateCrime();
             updatePhotoView();
         }
